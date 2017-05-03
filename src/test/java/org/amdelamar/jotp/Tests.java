@@ -1,12 +1,8 @@
 package org.amdelamar.jotp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -16,31 +12,18 @@ public class Tests {
 
     @Test
     public void testTOTP() {
-
         try {
             String secret = "HelloWorld";
-            String code = OTP.generate(secret, "" + System.currentTimeMillis(), 6, OTP.Type.TOTP);
+            String code1 = OTP.generate(secret, "" + System.currentTimeMillis(), 6, OTP.Type.TOTP);
 
-            // 30 sec window, so wait just 5 seconds
-            Thread.sleep(5000);
+            // 30 sec window, so wait just 1 second
+            // This will output a different base value
+            Thread.sleep(1000);            
 
-            // get base time in Hex
-            long t = (long) Math.floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30l);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(t);
-            dos.close();
-            byte[] longBytes = baos.toByteArray();
-            String base = Hex.encodeHexString(longBytes);
-
-            // convert Base32 secret to Hex
-            byte[] bytes = new Base32().decode(secret);
-            String key = Hex.encodeHexString(bytes);
-
-            String t0code = OTP.generate(key, base, 6, OTP.Type.TOTP);
+            String code2 = OTP.generate(secret, "" + System.currentTimeMillis(), 6, OTP.Type.TOTP);
 
             // compare OTP codes
-            assertEquals(code, t0code);
+            assertEquals(code1, code2);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,8 +32,22 @@ public class Tests {
 
     @Test
     public void testHOTP() {
-        // TODO
-        assertEquals(true, true);
+        try {
+            String secret = "HelloWorld";
+            String code1 = OTP.generate(secret, "" + System.currentTimeMillis(), 6, OTP.Type.HOTP);
+
+            // Indefinite window of opportunity here.
+            // Next generated code SHOULD be different than the previous.
+            Thread.sleep(1000);          
+
+            String code2 = OTP.generate(secret, "" + System.currentTimeMillis(), 6, OTP.Type.HOTP);
+
+            // compare OTP codes
+            assertNotEquals(code1, code2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
