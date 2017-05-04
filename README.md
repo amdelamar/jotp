@@ -1,7 +1,7 @@
 # Jotp
 
-[![Build](https://travis-ci.org/RamblingWare/RamblingWare.svg?branch=master)](https://travis-ci.org/amdelamar/jotp)
-[![Code Climate](https://codeclimate.com/github/RamblingWare/RamblingWare/badges/gpa.svg)](https://codeclimate.com/github/amdelamar/jotp)
+[![Build](https://travis-ci.org/amdelamar/jotp.svg?branch=master)](https://travis-ci.org/amdelamar/jotp)
+[![Code Climate](https://codeclimate.com/github/amdelamar/jotp/badges/gpa.svg)](https://codeclimate.com/github/amdelamar/jotp)
 [![License](http://img.shields.io/:license-apache-blue.svg)](https://github.com/amdelamar/jotp/blob/master/LICENSE)
 
 OTP (One Time Password) utility in Java.
