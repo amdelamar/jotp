@@ -22,7 +22,7 @@ public class HOTP implements OTPInterface{
         return Type.HOTP;
     }
 
-    public String generate(String key, String base, int digits) {
+    public String create(String key, String base, int digits) {
         try {
             return generateOTP(key.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET);
         } catch (Exception e) {

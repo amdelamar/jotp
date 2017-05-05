@@ -29,7 +29,7 @@ public class TOTP implements OTPInterface {
         return Type.TOTP;
     }
 
-    public String generate(String key, String base, int digits) {
+    public String create(String key, String base, int digits) {
         try {
             return generateTOTP(key, base, "" + digits, HMACSHA1_ALGORITHM);
         } catch (Exception e) {
