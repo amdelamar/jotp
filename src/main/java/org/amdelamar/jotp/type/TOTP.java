@@ -8,11 +8,13 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.amdelamar.jotp.OTP.Type;
+import org.amdelamar.jotp.exception.BadOperationException;
 
 /**
- * RFC 6238 Time based OTP
+ * Time based OTP class implements OTPInterface
  * 
  * @author kamranzafar, amdelamar
+ * @see https://tools.ietf.org/html/rfc6238
  */
 public class TOTP implements OTPInterface {
 
@@ -29,13 +31,26 @@ public class TOTP implements OTPInterface {
         return Type.TOTP;
     }
 
+    /**
+     * Create a one-time-password with the given key, base, and digits.
+     * 
+     * @param key
+     *            The secret. Shhhhhh!
+     * @param base
+     *            The offset. (TOTP base is time from UTC rounded to the half-second)
+     * @param digits
+     *            The length of the code (Commonly '6')
+     * @return code
+     * @throws BadOperationException
+     * @see https://tools.ietf.org/html/rfc6238
+     */
     public String create(String key, String base, int digits) {
         try {
-            return generateTOTP(key, base, "" + digits, HMACSHA1_ALGORITHM);
+            return generateTotp(key, base, "" + digits, HMACSHA1_ALGORITHM);
         } catch (Exception e) {
-
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -66,7 +81,6 @@ public class TOTP implements OTPInterface {
      * 
      * @param hex
      *            : the HEX string
-     * 
      * @return: a byte array
      */
 
@@ -93,10 +107,10 @@ public class TOTP implements OTPInterface {
      *            : number of digits to return
      * @param crypto
      *            : the crypto function to use
-     * 
      * @return: a numeric String in base 10 that includes {@link truncationDigits} digits
      */
-    private static String generateTOTP(String key, String time, String returnDigits, String crypto) {
+    private static String generateTotp(String key, String time, String returnDigits,
+            String crypto) {
         int codeDigits = Integer.decode(returnDigits).intValue();
         String result = null;
 

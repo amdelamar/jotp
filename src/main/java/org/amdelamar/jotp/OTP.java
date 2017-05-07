@@ -11,23 +11,25 @@ import org.apache.commons.codec.binary.Hex;
 
 public class OTP {
 
-    public enum Type {
+    public static enum Type {
         HOTP, TOTP
     }
 
-    public final static int BYTES = 20; // 160 bit
+    public static final int BYTES = 20; // 160 bit
 
     /**
      * Generate a random string using the characters provided, with the specified length.
      * 
      * @param characters
+     *            A set of possible characters to be chosen.
      * @param length
      *            default 20
      * @return secure random string
      */
     public static String random(String characters, int length) {
-        if (length < 1)
+        if (length < 1) {
             length = BYTES;
+        }
         java.security.SecureRandom random = new java.security.SecureRandom();
         char[] text = new char[length];
         for (int i = 0; i < length; i++) {
@@ -44,8 +46,9 @@ public class OTP {
      * @return secure random string
      */
     public static String randomBase32(int length) {
-        if (length < 1)
+        if (length < 1) {
             length = BYTES;
+        }
         byte[] bytes = new byte[length];
         java.security.SecureRandom random = new java.security.SecureRandom();
         random.nextBytes(bytes);
@@ -61,8 +64,9 @@ public class OTP {
      * @return secure random string
      */
     public static String randomHex(int length) {
-        if (length < 1)
+        if (length < 1) {
             length = BYTES;
+        }
         byte[] bytes = new byte[length];
         java.security.SecureRandom random = new java.security.SecureRandom();
         random.nextBytes(bytes);
@@ -79,7 +83,7 @@ public class OTP {
      *            The offset. (e.g. TOTP base is time from UTC rounded to the half-second while HOTP
      *            is a counter)
      * @param digits
-     *            The length of the code (e.g. 6 for 123006)
+     *            The length of the code (Commonly '6')
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return code
@@ -87,7 +91,8 @@ public class OTP {
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static String create(String key, String base, int digits, Type type) throws BadOperationException {
+    public static String create(String key, String base, int digits, Type type)
+            throws BadOperationException {
 
         if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
@@ -109,12 +114,12 @@ public class OTP {
      * @param base
      *            The offset. (HOTP is a counter incremented by each use)
      * @param digits
-     *            The length of the code (e.g. 6 for 123006)
+     *            The length of the code (Commonly '6')
      * @return code
      * @throws BadOperationException
      * @see https://tools.ietf.org/html/rfc4226
      */
-    public static String createHOTP(String key, String base, int digits) {
+    public static String createHotp(String key, String base, int digits) {
         HOTP hotp = new HOTP();
         return hotp.create(key, base, digits);
     }
@@ -127,12 +132,12 @@ public class OTP {
      * @param base
      *            The offset. (TOTP base is time from UTC rounded to the half-second)
      * @param digits
-     *            The length of the code (e.g. 6 for 123006)
+     *            The length of the code (Commonly '6')
      * @return code
      * @throws BadOperationException
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static String createTOTP(String key, String base, int digits) {
+    public static String createTotp(String key, String base, int digits) {
         TOTP totp = new TOTP();
         return totp.create(key, base, digits);
     }
@@ -143,18 +148,20 @@ public class OTP {
      * @param secret
      *            Shhhhh.
      * @param code
+     *            An OTP code.
      * @param digits
-     *            Length of code (e.g. 6 for 123006)
+     *            Length of code (Commonly '6')
      * @return true if valid
      * @see https://tools.ietf.org/html/rfc4226
      */
-    public static boolean verifyHOTP(String secret, String code, int digits) {
+    public static boolean verifyHotp(String secret, String code, int digits) {
         try {
             // get base time in Hex
-            long t = (long) Math.floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30l);
+            long time = (long) Math
+                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(t);
+            dos.writeLong(time);
             dos.close();
             byte[] longBytes = baos.toByteArray();
             String base = Hex.encodeHexString(longBytes);
@@ -163,14 +170,11 @@ public class OTP {
             byte[] bytes = new Base32().decode(secret);
             String key = Hex.encodeHexString(bytes);
 
-            String ncode = createHOTP(key, base, digits);
+            String ncode = createHotp(key, base, digits);
 
             // compare OTP codes
-            if (code.equals(ncode))
-                return true;
-            else
-                return false;
-
+            return code.equals(ncode);
+            
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -183,18 +187,20 @@ public class OTP {
      * @param secret
      *            Shhhhh.
      * @param code
+     *            An OTP code.
      * @param digits
-     *            Length of code (e.g. 6 for 123006)
+     *            Length of code (Commonly '6')
      * @return true if valid
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verifyTOTP(String secret, String code, int digits) {
+    public static boolean verifyTotp(String secret, String code, int digits) {
         try {
             // get base time in Hex
-            long t = (long) Math.floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30l);
+            long time = (long) Math
+                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(t);
+            dos.writeLong(time);
             dos.close();
             byte[] longBytes = baos.toByteArray();
             String base = Hex.encodeHexString(longBytes);
@@ -203,13 +209,10 @@ public class OTP {
             byte[] bytes = new Base32().decode(secret);
             String key = Hex.encodeHexString(bytes);
 
-            String ncode = createTOTP(key, base, digits);
+            String ncode = createTotp(key, base, digits);
 
             // compare OTP codes
-            if (code.equals(ncode))
-                return true;
-            else
-                return false;
+            return code.equals(ncode);
 
         } catch (Exception e) {
             e.printStackTrace();

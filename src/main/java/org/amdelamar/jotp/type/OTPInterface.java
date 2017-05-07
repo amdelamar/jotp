@@ -8,9 +8,9 @@ import org.amdelamar.jotp.OTP.Type;
  * @author kamranzafar, amdelamar
  */
 public interface OTPInterface {
-    
+
     public abstract Type getType();
-    
+
     public abstract String create(String key, String base, int digits);
 
 }
