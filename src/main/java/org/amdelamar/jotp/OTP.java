@@ -1,22 +1,24 @@
 package org.amdelamar.jotp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.amdelamar.jotp.exception.BadOperationException;
+import org.amdelamar.jotp.exception.OTPException;
 import org.amdelamar.jotp.type.HOTP;
 import org.amdelamar.jotp.type.TOTP;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 
 /**
- * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.
+ * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using
+ * HMAC-based) or Time-based algorithms.
  * 
  * @author amdelamar
  * @see https://github.com/amdelamar/jotp
  */
 public class OTP {
-    
+
     /**
      * HmacSHA1, HmacSHA256, HmacSHA512
      */
@@ -91,21 +93,13 @@ public class OTP {
      * A quick method to get Unix Time rounded down to the nearest 30 seconds.
      * 
      * @return String Hex time
+     * @throws IOException Error when generating Unix time.
      */
-    public static String getTimeInHex() {
-        try {
-            long time = (long) Math
-                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(time);
-            dos.close();
-            byte[] longBytes = baos.toByteArray();
-            return Hex.encodeHexString(longBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static String getTimeInHex() throws IOException {
+        long time = (long) Math
+                .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
+        byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
+        return Hex.encodeHexString(longBytes);
     }
 
     /**
@@ -121,7 +115,7 @@ public class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return code
-     * @throws BadOperationException
+     * @throws BadOperationException Error when Type is not recognized.
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
@@ -188,9 +182,12 @@ public class OTP {
      * @param digits
      *            Length of code (Commonly '6')
      * @return true if valid
+     * @throws OTPException
+     *             Error when comparing codes.
      * @see https://tools.ietf.org/html/rfc4226
      */
-    public static boolean verifyHotp(String secret, String base, String code, int digits) {
+    public static boolean verifyHotp(String secret, String base, String code, int digits)
+            throws OTPException {
         try {
             // convert Base32 secret to Hex
             byte[] bytes = new Base32().decode(secret);
@@ -200,10 +197,8 @@ public class OTP {
 
             // compare OTP codes
             return code.equals(ncode);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new OTPException(e.getMessage());
         }
     }
 
@@ -219,9 +214,11 @@ public class OTP {
      * @param digits
      *            Length of code (Commonly '6')
      * @return true if valid
+     * @throws OTPException
+     *             Error when comparing codes.
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verifyTotp(String secret, String code, int digits) {
+    public static boolean verifyTotp(String secret, String code, int digits) throws OTPException {
         try {
             // get base time in Hex
             String base = getTimeInHex();
@@ -234,10 +231,8 @@ public class OTP {
 
             // compare OTP codes
             return code.equals(ncode);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new OTPException(e.getMessage());
         }
     }
 
@@ -255,9 +250,12 @@ public class OTP {
      * @param digits
      *            Length of code (Commonly '6')
      * @return true if valid
+     * @throws OTPException
+     *             Error when comparing codes.
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verifyTotp(String secret, String base, String code, int digits) {
+    public static boolean verifyTotp(String secret, String base, String code, int digits)
+            throws OTPException {
         try {
             // convert Base32 secret to Hex
             byte[] bytes = new Base32().decode(secret);
@@ -267,10 +265,8 @@ public class OTP {
 
             // compare OTP codes
             return code.equals(ncode);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new OTPException(e.getMessage());
         }
     }
 }
