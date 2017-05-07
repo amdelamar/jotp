@@ -1,11 +1,14 @@
 package org.amdelamar.jotp.type;
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.amdelamar.jotp.OTP;
 import org.amdelamar.jotp.OTP.Type;
 import org.amdelamar.jotp.exception.BadOperationException;
 
@@ -40,7 +43,7 @@ public class HOTP implements OTPInterface {
     public String create(String key, String base, int digits) {
         try {
             return generateHotp(key.getBytes(), Long.parseLong(base), digits, CHECKSUM,
-                    TRUNCATE_OFFSET);
+                    TRUNCATE_OFFSET, OTP.HMACSHA1_ALGORITHM);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -81,30 +84,25 @@ public class HOTP implements OTPInterface {
     }
 
     /**
-     * This method uses the JCE to provide the HMAC-SHA-1 M'Raihi, et al. Informational [Page 28]
-     * algorithm. HMAC computes a Hashed Message Authentication Code and in this case SHA1 is the
-     * hash algorithm used.
+     * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
+     * Authentication Code with the crypto hash algorithm as a parameter.
      * 
+     * @param crypto
+     *            the crypto algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
      * @param keyBytes
-     *            the bytes to use for the HMAC-SHA-1 key
+     *            the bytes to use for the HMAC key
      * @param text
-     *            the message or text to be authenticated.
-     * @throws NoSuchAlgorithmException
-     *             if no provider makes either HmacSHA1 or HMAC-SHA-1 digest algorithms available.
-     * @throws InvalidKeyException
-     *             The secret provided was not a valid HMAC-SHA-1 key.
+     *            the message or text to be authenticated
      */
-    private static byte[] hmac_sha1(byte[] keyBytes, byte[] text)
-            throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac hmacSha1;
+    private static byte[] hmac(String crypto, byte[] keyBytes, byte[] text) {
         try {
-            hmacSha1 = Mac.getInstance("HmacSHA1");
-        } catch (NoSuchAlgorithmException nsae) {
-            hmacSha1 = Mac.getInstance("HMAC-SHA-1");
+            Mac hmac = Mac.getInstance(crypto);
+            SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
+            hmac.init(macKey);
+            return hmac.doFinal(text);
+        } catch (GeneralSecurityException gse) {
+            throw new UndeclaredThrowableException(gse);
         }
-        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-        hmacSha1.init(macKey);
-        return hmacSha1.doFinal(text);
     }
 
     /**
@@ -114,7 +112,7 @@ public class HOTP implements OTPInterface {
      *            Shhhhh.
      * @param movingFactor
      *            the counter, time, or other value
-     * @param codeDigits
+     * @param digits
      *            length of the code
      * @param addChecksum
      *            a flag that indicates if the checksum digit should be appened to the OTP
@@ -123,12 +121,14 @@ public class HOTP implements OTPInterface {
      *            range of 0 ... 15, then dynamic truncation will be used. Dynamic truncation is
      *            when the last 4 bits of the last byte of the MAC are used to determine the start
      *            offset.
+     * @param crypto
+     *            the crypto function to use
      * @return An OTP code.
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    private static String generateHotp(byte[] secret, long movingFactor, int codeDigits,
-            boolean addChecksum, int truncationOffset)
+    private static String generateHotp(byte[] secret, long movingFactor, int digits,
+            boolean addChecksum, int truncationOffset, String crypto)
             throws NoSuchAlgorithmException, InvalidKeyException {
         // put movingFactor value into text byte array
         byte[] text = new byte[8];
@@ -138,7 +138,7 @@ public class HOTP implements OTPInterface {
         }
 
         // compute hmac hash
-        byte[] hash = hmac_sha1(secret, text);
+        byte[] hash = hmac(crypto, secret, text);
 
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;
@@ -148,13 +148,13 @@ public class HOTP implements OTPInterface {
         int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
                 | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
 
-        int otp = binary % ((int) Math.pow(10, codeDigits));
+        int otp = binary % ((int) Math.pow(10, digits));
         if (addChecksum) {
-            otp = (otp * 10) + calcChecksum(otp, codeDigits);
+            otp = (otp * 10) + calcChecksum(otp, digits);
         }
         String result = Integer.toString(otp);
-        int digits = addChecksum ? (codeDigits + 1) : codeDigits;
-        while (result.length() < digits) {
+        int digit = addChecksum ? (digits + 1) : digits;
+        while (result.length() < digit) {
             result = "0" + result;
         }
         return result;

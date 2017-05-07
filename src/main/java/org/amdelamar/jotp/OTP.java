@@ -9,7 +9,20 @@ import org.amdelamar.jotp.type.TOTP;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 
+/**
+ * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.
+ * 
+ * @author amdelamar
+ * @see https://github.com/amdelamar/jotp
+ */
 public class OTP {
+    
+    /**
+     * HmacSHA1, HmacSHA256, HmacSHA512
+     */
+    public static final String HMACSHA1_ALGORITHM = "HmacSHA1";
+    public static final String HMACSHA256_ALGORITHM = "HmacSHA256";
+    public static final String HMACSHA512_ALGORITHM = "HmacSHA512";
 
     public static enum Type {
         HOTP, TOTP
@@ -72,6 +85,27 @@ public class OTP {
         random.nextBytes(bytes);
 
         return Hex.encodeHexString(bytes);
+    }
+
+    /**
+     * A quick method to get Unix Time rounded down to the nearest 30 seconds.
+     * 
+     * @return String Hex time
+     */
+    public static String getTimeInHex() {
+        try {
+            long time = (long) Math
+                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(baos);
+            dos.writeLong(time);
+            dos.close();
+            byte[] longBytes = baos.toByteArray();
+            return Hex.encodeHexString(longBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -146,26 +180,18 @@ public class OTP {
      * Returns true if the code is valid for the Hmac-based OTP of the secret.
      * 
      * @param secret
-     *            Shhhhh.
+     *            Shhhhh. (Base32)
+     * @param base
+     *            The base or counter.
      * @param code
-     *            An OTP code.
+     *            An OTP code to check.
      * @param digits
      *            Length of code (Commonly '6')
      * @return true if valid
      * @see https://tools.ietf.org/html/rfc4226
      */
-    public static boolean verifyHotp(String secret, String code, int digits) {
+    public static boolean verifyHotp(String secret, String base, String code, int digits) {
         try {
-            // get base time in Hex
-            long time = (long) Math
-                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(time);
-            dos.close();
-            byte[] longBytes = baos.toByteArray();
-            String base = Hex.encodeHexString(longBytes);
-
             // convert Base32 secret to Hex
             byte[] bytes = new Base32().decode(secret);
             String key = Hex.encodeHexString(bytes);
@@ -174,7 +200,7 @@ public class OTP {
 
             // compare OTP codes
             return code.equals(ncode);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -182,12 +208,14 @@ public class OTP {
     }
 
     /**
-     * Returns true if the code is valid for the Time-based OTP of the secret.
+     * Returns true if the code is valid for the Time-based OTP of the secret. The 'base' is already
+     * determined to be Unix-time rounded down to the nearest 30 seconds via "getTimeInHex()". But
+     * you can use the other "verityTotp()" method to provide your own base if needed.
      * 
      * @param secret
-     *            Shhhhh.
+     *            Shhhhh. (Base32)
      * @param code
-     *            An OTP code.
+     *            An OTP code to check.
      * @param digits
      *            Length of code (Commonly '6')
      * @return true if valid
@@ -196,15 +224,41 @@ public class OTP {
     public static boolean verifyTotp(String secret, String code, int digits) {
         try {
             // get base time in Hex
-            long time = (long) Math
-                    .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(baos);
-            dos.writeLong(time);
-            dos.close();
-            byte[] longBytes = baos.toByteArray();
-            String base = Hex.encodeHexString(longBytes);
+            String base = getTimeInHex();
 
+            // convert Base32 secret to Hex
+            byte[] bytes = new Base32().decode(secret);
+            String key = Hex.encodeHexString(bytes);
+
+            String ncode = createTotp(key, base, digits);
+
+            // compare OTP codes
+            return code.equals(ncode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if the code is valid for the Time-based OTP of the secret. The 'base' is already
+     * determined to be Unix-time rounded down to the nearest 30 seconds via "getTimeInHex()". But
+     * you can use the other "verityTotp()" method to provide your own base if needed.
+     * 
+     * @param secret
+     *            Shhhhh. (Base32)
+     * @param base
+     *            The base or counter. In this case, its time in steps.
+     * @param code
+     *            An OTP code to check.
+     * @param digits
+     *            Length of code (Commonly '6')
+     * @return true if valid
+     * @see https://tools.ietf.org/html/rfc6238
+     */
+    public static boolean verifyTotp(String secret, String base, String code, int digits) {
+        try {
             // convert Base32 secret to Hex
             byte[] bytes = new Base32().decode(secret);
             String key = Hex.encodeHexString(bytes);
