@@ -13,13 +13,34 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 * Gradle `coming soon`.
 * Zip with examples `coming soon`.
 
-Example of Time-based OTP:
+```
+// Random secret Base32 with 20 bytes (160 bits) length
+// (Use this to setup 2FA for new accounts).
+String secret = OTP.randomBase32(20);
+// Returns: GBMDMWBQI5KVEURWI5CT
 
-`OTP.generateTOTP("HelloWorld!", "" + System.currentTimeMillis(), 6)`
+// Generate a Time-based OTP from the secret, using Unix-time
+// rounded down to the nearest 30 seconds.
+String code = OTP.createTotp(secret, OTP.getTimeInHex(), 6);
 
-Example of Counter-based OTP:
 
-`OTP.generateHOTP("HelloWorld!", "2", 6,)`
+// Show User QR Code (1)
+// Easiest way to do this is through Goolge APIs, but I
+// plan to add a 'generateImage()' function soon.
+// https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=GBMDMWBQI5KVEURWI5CT&issuer=Example&algorithm=SHA1&digits=6&period=30
+```
+[![QR Image Example](https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=GBMDMWBQI5KVEURWI5CT&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://developers.google.com/chart/infographics/docs/qr_codes)
+```
+// After user scans the image with their mobile app...
+
+// Get User's input code for a login.
+String userEnteredCode = "123456";
+
+// Verify OTP
+if(OTP.verifyTotp(secret, userEnteredCode, 6)) {
+    // Code valid. Login successful.
+}
+```
 
 
 ## Details
@@ -34,3 +55,5 @@ A project by [Austin Delamar](https://github.com/amdelamar) based off of [Kamron
 ## License
 
 [Apache 2.0](https://github.com/amdelamar/jotp/blob/master/LICENSE)
+
+<sup>1</sup> QR code standard is trademarked by [Denso Wave, Inc](http://www.denso-wave.com/qrcode/index-e.html).
