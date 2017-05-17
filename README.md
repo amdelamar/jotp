@@ -11,33 +11,34 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 * Maven `coming soon`.
 * Gradle `coming soon`.
-* Zip with examples `coming soon`.
+* Download Jar `coming soon`.
 
 ```
 // Random secret Base32 with 20 bytes (160 bits) length
 // (Use this to setup 2FA for new accounts).
 String secret = OTP.randomBase32(20);
-// Returns: GBMDMWBQI5KVEURWI5CT
+// Returns: IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String code = OTP.createTotp(secret, OTP.getTimeInHex(), 6);
-
-
-// Show User QR Code (1)
-// Easiest way to do this is through Goolge APIs, but I
-// plan to add a 'generateImage()' function soon.
-// https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=GBMDMWBQI5KVEURWI5CT&issuer=Example&algorithm=SHA1&digits=6&period=30
+String code = OTP.createTotp(secret, OTP.timeInHex(), 6, "totp");
 ```
-[![QR Image Example](https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=GBMDMWBQI5KVEURWI5CT&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://developers.google.com/chart/infographics/docs/qr_codes)
-```
-// After user scans the image with their mobile app...
 
-// Get User's input code for a login.
+Show User QR Code <sup>1</sup>
+Easiest way to do this is through Goolge APIs, but I
+plan to add a 'generateImage()' function soon.
+
+[![QR Image Example](https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://developers.google.com/chart/infographics/docs/qr_codes)
+https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30
+
+After user scans the image with their mobile app we can compare codes.
+
+```
+// Get User's input code for a login...
 String userEnteredCode = "123456";
 
 // Verify OTP
-if(OTP.verifyTotp(secret, userEnteredCode, 6)) {
+if(OTP.verify(secret, userEnteredCode, 6, "totp")) {
     // Code valid. Login successful.
 }
 ```
@@ -46,6 +47,8 @@ if(OTP.verifyTotp(secret, userEnteredCode, 6)) {
 ## Details
 
 This code currently supports the standard HMAC-based (HOTP [RFC 4226](https://tools.ietf.org/html/rfc4226)) and time-based (TOTP [RFC 6238](https://tools.ietf.org/html/rfc6238)) algorithms for one-time passwords.
+
+It was started as an easy way to enable 2-Factor Authentication for Java based web applications, but it can be applied to other Java applications as well.
 
 
 ## Credit
