@@ -7,8 +7,6 @@ import java.security.GeneralSecurityException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.amdelamar.jotp.OTP;
-import org.amdelamar.jotp.OTP.Type;
 import org.amdelamar.jotp.exception.BadOperationException;
 
 /**
@@ -18,15 +16,16 @@ import org.amdelamar.jotp.exception.BadOperationException;
  * @see https://tools.ietf.org/html/rfc6238
  */
 public class TOTP implements OTPInterface {
-
-    public Type getType() {
-        return Type.TOTP;
-    }
+    
+    /**
+     * HmacSHA1, HmacSHA256, HmacSHA512
+     */
+    private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
 
     /**
      * Create a one-time-password with the given key, base, and digits.
      * 
-     * @param key
+     * @param secret
      *            The secret. Shhhhhh!
      * @param base
      *            The offset. (TOTP base is time from UTC rounded to the half-second)
@@ -36,9 +35,9 @@ public class TOTP implements OTPInterface {
      * @throws BadOperationException
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public String create(String key, String base, int digits) {
+    public String create(String secret, String base, int digits) {
         try {
-            return generateTotp(key, base, digits, OTP.HMACSHA1_ALGORITHM);
+            return generateTotp(secret, base, digits, HMACSHA1_ALGORITHM);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -81,8 +80,9 @@ public class TOTP implements OTPInterface {
 
         // Copy all the REAL bytes, not the "first"
         byte[] ret = new byte[bArray.length - 1];
-        for (int i = 0; i < ret.length; i++)
+        for (int i = 0; i < ret.length; i++) {
             ret[i] = bArray[i + 1];
+        }
         return ret;
     }
 
@@ -103,8 +103,9 @@ public class TOTP implements OTPInterface {
         // Using the counter
         // First 8 bytes are for the movingFactor
         // Compliant with base RFC 4226 (HOTP)
-        while (time.length() < 16)
+        while (time.length() < 16) {
             time = "0" + time;
+        }
 
         // Get the HEX in a Byte[]
         byte[] msg = hexStr2Bytes(time);

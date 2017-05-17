@@ -8,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.amdelamar.jotp.OTP;
-import org.amdelamar.jotp.OTP.Type;
 import org.amdelamar.jotp.exception.BadOperationException;
 
 /**
@@ -22,15 +20,16 @@ public class HOTP implements OTPInterface {
 
     private static final int TRUNCATE_OFFSET = 0;
     private static final boolean CHECKSUM = false;
-
-    public Type getType() {
-        return Type.HOTP;
-    }
+    
+    /**
+     * HmacSHA1, HmacSHA256, HmacSHA512
+     */
+    private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
 
     /**
      * Create a one-time-password with the given key, base, and digits.
      * 
-     * @param key
+     * @param secret
      *            The secret. Shhhhhh!
      * @param base
      *            The offset. (HOTP is a counter incremented by each use)
@@ -40,10 +39,10 @@ public class HOTP implements OTPInterface {
      * @throws BadOperationException
      * @see https://tools.ietf.org/html/rfc4226
      */
-    public String create(String key, String base, int digits) {
+    public String create(String secret, String base, int digits) {
         try {
-            return generateHotp(key.getBytes(), Long.parseLong(base), digits, CHECKSUM,
-                    TRUNCATE_OFFSET, OTP.HMACSHA1_ALGORITHM);
+            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM,
+                    TRUNCATE_OFFSET, HMACSHA1_ALGORITHM);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -53,6 +52,28 @@ public class HOTP implements OTPInterface {
     // These are used to calculate the check-sum digits.
     // 0 1 2 3 4 5 6 7 8 9
     private static final int[] doubleDigits = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9};
+
+    /**
+     * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
+     * Authentication Code with the crypto hash algorithm as a parameter.
+     * 
+     * @param crypto
+     *            the crypto algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
+     * @param keyBytes
+     *            the bytes to use for the HMAC key
+     * @param text
+     *            the message or text to be authenticated
+     */
+    private static byte[] hmac(String crypto, byte[] keyBytes, byte[] text) {
+        try {
+            Mac hmac = Mac.getInstance(crypto);
+            SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
+            hmac.init(macKey);
+            return hmac.doFinal(text);
+        } catch (GeneralSecurityException gse) {
+            throw new UndeclaredThrowableException(gse);
+        }
+    }
 
     /**
      * Calculates the checksum using the credit card algorithm. This algorithm has the advantage
@@ -81,28 +102,6 @@ public class HOTP implements OTPInterface {
             result = 10 - result;
         }
         return result;
-    }
-
-    /**
-     * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
-     * Authentication Code with the crypto hash algorithm as a parameter.
-     * 
-     * @param crypto
-     *            the crypto algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
-     * @param keyBytes
-     *            the bytes to use for the HMAC key
-     * @param text
-     *            the message or text to be authenticated
-     */
-    private static byte[] hmac(String crypto, byte[] keyBytes, byte[] text) {
-        try {
-            Mac hmac = Mac.getInstance(crypto);
-            SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-            hmac.init(macKey);
-            return hmac.doFinal(text);
-        } catch (GeneralSecurityException gse) {
-            throw new UndeclaredThrowableException(gse);
-        }
     }
 
     /**

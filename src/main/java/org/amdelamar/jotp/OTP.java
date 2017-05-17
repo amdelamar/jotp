@@ -19,16 +19,9 @@ import org.apache.commons.codec.binary.Hex;
  */
 public class OTP {
 
-    /**
-     * HmacSHA1, HmacSHA256, HmacSHA512
-     */
-    public static final String HMACSHA1_ALGORITHM = "HmacSHA1";
-    public static final String HMACSHA256_ALGORITHM = "HmacSHA256";
-    public static final String HMACSHA512_ALGORITHM = "HmacSHA512";
-
-    public static enum Type {
-        HOTP, TOTP
-    }
+    // Algorithms
+    public static final String TOTP = "totp";
+    public static final String HOTP = "hotp";
 
     public static final int BYTES = 20; // 160 bit
 
@@ -52,7 +45,7 @@ public class OTP {
         }
         return new String(text);
     }
-
+    
     /**
      * Generate a random string in Base32, with the specified length.
      * 
@@ -72,30 +65,13 @@ public class OTP {
     }
 
     /**
-     * Generate a random string in Hexadecimal, with the specified length.
-     * 
-     * @param length
-     *            default 20
-     * @return secure random string
-     */
-    public static String randomHex(int length) {
-        if (length < 1) {
-            length = BYTES;
-        }
-        byte[] bytes = new byte[length];
-        java.security.SecureRandom random = new java.security.SecureRandom();
-        random.nextBytes(bytes);
-
-        return Hex.encodeHexString(bytes);
-    }
-
-    /**
      * A quick method to get Unix Time rounded down to the nearest 30 seconds.
      * 
      * @return String Hex time
-     * @throws IOException Error when generating Unix time.
+     * @throws IOException
+     *             Error when generating Unix time.
      */
-    public static String getTimeInHex() throws IOException {
+    public static String timeInHex() throws IOException {
         long time = (long) Math
                 .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
         byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
@@ -105,7 +81,7 @@ public class OTP {
     /**
      * Create a one-time-password with the given key, base, digits, and OTP.Type.
      * 
-     * @param key
+     * @param secret
      *            The secret. Shhhhhh!
      * @param base
      *            The offset. (e.g. TOTP base is time from UTC rounded to the half-second while HOTP
@@ -113,65 +89,37 @@ public class OTP {
      * @param digits
      *            The length of the code (Commonly '6')
      * @param type
-     *            Type.TOTP or Type.HOTP
+     *            TOTP or HOTP
      * @return code
-     * @throws BadOperationException Error when Type is not recognized.
+     * @throws BadOperationException
+     *             Error when Type is not recognized.
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static String create(String key, String base, int digits, Type type)
+    public static String create(String secret, String base, int digits, String type)
             throws BadOperationException {
 
-        if (type == Type.HOTP) {
+        // validate
+        validateParameters(secret, base, digits, type);
+        
+        // convert Base32 secret to Hex
+        byte[] bytes = new Base32().decode(secret);
+        String key = Hex.encodeHexString(bytes);
+
+        if (type.equalsIgnoreCase(HOTP)) {
             HOTP hotp = new HOTP();
             return hotp.create(key, base, digits);
-        } else if (type == Type.TOTP) {
+        } else {
             TOTP totp = new TOTP();
             return totp.create(key, base, digits);
-        } else {
-            // Type not recognized
-            throw new BadOperationException("OTP Type not recognized.");
         }
     }
 
     /**
-     * Create a one-time-password with the given key, base, and digits.
+     * Returns true if the code is valid for the Hmac-based or Time-based OTP of the secret.
      * 
-     * @param key
-     *            The secret. Shhhhhh!
-     * @param base
-     *            The offset. (HOTP is a counter incremented by each use)
-     * @param digits
-     *            The length of the code (Commonly '6')
-     * @return code
-     * @throws BadOperationException
-     * @see https://tools.ietf.org/html/rfc4226
-     */
-    public static String createHotp(String key, String base, int digits) {
-        HOTP hotp = new HOTP();
-        return hotp.create(key, base, digits);
-    }
-
-    /**
-     * Create a one-time-password with the given key, base, and digits.
-     * 
-     * @param key
-     *            The secret. Shhhhhh!
-     * @param base
-     *            The offset. (TOTP base is time from UTC rounded to the half-second)
-     * @param digits
-     *            The length of the code (Commonly '6')
-     * @return code
-     * @throws BadOperationException
-     * @see https://tools.ietf.org/html/rfc6238
-     */
-    public static String createTotp(String key, String base, int digits) {
-        TOTP totp = new TOTP();
-        return totp.create(key, base, digits);
-    }
-
-    /**
-     * Returns true if the code is valid for the Hmac-based OTP of the secret.
+     * For Hmac-based the 'base' is a counter, like 1,2,3. For Time-based the 'base' is Unix-time
+     * rounded down to the nearest 30 seconds via "getTimeInHex()"
      * 
      * @param secret
      *            Shhhhh. (Base32)
@@ -181,53 +129,43 @@ public class OTP {
      *            An OTP code to check.
      * @param digits
      *            Length of code (Commonly '6')
+     * @param type
+     *            TOTP or HOTP
      * @return true if valid
      * @throws OTPException
      *             Error when comparing codes.
+     * @throws BadOperationException
+     *             Error when parameters invalid.
      * @see https://tools.ietf.org/html/rfc4226
-     */
-    public static boolean verifyHotp(String secret, String base, String code, int digits)
-            throws OTPException {
-        try {
-            // convert Base32 secret to Hex
-            byte[] bytes = new Base32().decode(secret);
-            String key = Hex.encodeHexString(bytes);
-
-            String ncode = createHotp(key, base, digits);
-
-            // compare OTP codes
-            return code.equals(ncode);
-        } catch (Exception e) {
-            throw new OTPException(e.getMessage());
-        }
-    }
-
-    /**
-     * Returns true if the code is valid for the Time-based OTP of the secret. The 'base' is already
-     * determined to be Unix-time rounded down to the nearest 30 seconds via "getTimeInHex()". But
-     * you can use the other "verityTotp()" method to provide your own base if needed.
-     * 
-     * @param secret
-     *            Shhhhh. (Base32)
-     * @param code
-     *            An OTP code to check.
-     * @param digits
-     *            Length of code (Commonly '6')
-     * @return true if valid
-     * @throws OTPException
-     *             Error when comparing codes.
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verifyTotp(String secret, String code, int digits) throws OTPException {
-        try {
-            // get base time in Hex
-            String base = getTimeInHex();
+    public static boolean verify(String secret, String base, String code, int digits, String type)
+            throws OTPException, BadOperationException {
 
+        // validate
+        validateParameters(secret, base, digits, type);
+        if (code == null || code.isEmpty()) {
+            throw new BadOperationException("Code cannot be null or empty.");
+        }
+        if (code.length() != digits) {
+            // code length must match digits
+            return false;
+        }
+
+        try {
             // convert Base32 secret to Hex
             byte[] bytes = new Base32().decode(secret);
             String key = Hex.encodeHexString(bytes);
 
-            String ncode = createTotp(key, base, digits);
+            // generate code to compare
+            String ncode = null;
+            if (type.equalsIgnoreCase(HOTP)) {
+                HOTP hotp = new HOTP();
+                ncode = hotp.create(key, base, digits);
+            } else {
+                TOTP totp = new TOTP();
+                ncode = totp.create(key, base, digits);
+            }
 
             // compare OTP codes
             return code.equals(ncode);
@@ -237,36 +175,37 @@ public class OTP {
     }
 
     /**
-     * Returns true if the code is valid for the Time-based OTP of the secret. The 'base' is already
-     * determined to be Unix-time rounded down to the nearest 30 seconds via "getTimeInHex()". But
-     * you can use the other "verityTotp()" method to provide your own base if needed.
+     * Validate the parameters used for generating one-time passwords.
      * 
      * @param secret
      *            Shhhhh. (Base32)
      * @param base
-     *            The base or counter. In this case, its time in steps.
-     * @param code
-     *            An OTP code to check.
+     *            The base or counter.
      * @param digits
      *            Length of code (Commonly '6')
-     * @return true if valid
-     * @throws OTPException
-     *             Error when comparing codes.
-     * @see https://tools.ietf.org/html/rfc6238
+     * @param type
+     *            TOTP or HOTP
+     * @return true if parameters are valid
+     * @throws BadOperationException
+     *             Error when parameters invalid.
      */
-    public static boolean verifyTotp(String secret, String base, String code, int digits)
-            throws OTPException {
-        try {
-            // convert Base32 secret to Hex
-            byte[] bytes = new Base32().decode(secret);
-            String key = Hex.encodeHexString(bytes);
-
-            String ncode = createTotp(key, base, digits);
-
-            // compare OTP codes
-            return code.equals(ncode);
-        } catch (Exception e) {
-            throw new OTPException(e.getMessage());
+    private static boolean validateParameters(String secret, String base, int digits, String type)
+            throws BadOperationException {
+        if (secret == null || secret.isEmpty()) {
+            throw new BadOperationException("Secret cannot be null or empty.");
         }
+        if (base == null || base.isEmpty()) {
+            throw new BadOperationException("Base cannot be null or empty.");
+        }
+        if (type == null || type.isEmpty()) {
+            throw new BadOperationException("Type cannot be null or empty.");
+        }
+        if (digits <= 0) {
+            throw new BadOperationException("Digits must be a positive integer (e.g. '6').");
+        }
+        if (!type.equalsIgnoreCase(HOTP) && !type.equalsIgnoreCase(TOTP)) {
+            throw new BadOperationException("OTP type not recognized.");
+        }
+        return true;
     }
 }
