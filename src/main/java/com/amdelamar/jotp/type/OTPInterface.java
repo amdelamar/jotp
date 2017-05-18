@@ -1,4 +1,4 @@
-package org.amdelamar.jotp.type;
+package com.amdelamar.jotp.type;
 
 /**
  * OTP (One Time Password) generator

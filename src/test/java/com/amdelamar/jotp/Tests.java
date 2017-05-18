@@ -1,14 +1,16 @@
-package org.amdelamar.jotp;
+package com.amdelamar.jotp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 
-import org.amdelamar.jotp.exception.BadOperationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import com.amdelamar.jotp.OTP;
+import com.amdelamar.jotp.exception.BadOperationException;
 
 @RunWith(JUnit4.class)
 public class Tests {

@@ -1,4 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.github.amdelamar'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -9,12 +13,16 @@ repositories {
 }
 
 dependencies {
-    compile "org.apache.logging.log4j:log4j-core-its:2.+"
     compile "commons-codec:commons-codec:1.8"
 	testCompile "junit:junit:4.12"
 }
 
 jar {
     baseName = 'jotp'
-    version =  '1.0'
+    from sourceSets.main.allSource
+}
+
+javadoc {
+	source = sourceSets.main.allJava
+	classpath = configurations.compile
 }

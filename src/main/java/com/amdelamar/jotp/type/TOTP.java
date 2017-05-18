@@ -1,4 +1,4 @@
-package org.amdelamar.jotp.type;
+package com.amdelamar.jotp.type;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
@@ -7,7 +7,7 @@ import java.security.GeneralSecurityException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.amdelamar.jotp.exception.BadOperationException;
+import com.amdelamar.jotp.exception.BadOperationException;
 
 /**
  * Time based OTP class implements OTPInterface

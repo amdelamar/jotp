@@ -1,14 +1,15 @@
-package org.amdelamar.jotp;
+package com.amdelamar.jotp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.amdelamar.jotp.exception.BadOperationException;
-import org.amdelamar.jotp.exception.OTPException;
-import org.amdelamar.jotp.type.HOTP;
-import org.amdelamar.jotp.type.TOTP;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
+
+import com.amdelamar.jotp.exception.BadOperationException;
+import com.amdelamar.jotp.exception.OTPException;
+import com.amdelamar.jotp.type.HOTP;
+import com.amdelamar.jotp.type.TOTP;
 
 /**
  * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using

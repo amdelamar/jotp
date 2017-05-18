@@ -1,4 +1,4 @@
-package org.amdelamar.jotp.exception;
+package com.amdelamar.jotp.exception;
 
 public class OTPException extends RuntimeException {
 

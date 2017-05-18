@@ -1,4 +1,4 @@
-package org.amdelamar.jotp.type;
+package com.amdelamar.jotp.type;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.GeneralSecurityException;
@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.amdelamar.jotp.exception.BadOperationException;
+import com.amdelamar.jotp.exception.BadOperationException;
 
 /**
  * Hmac based OTP class implements OTPInterface
