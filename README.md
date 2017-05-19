@@ -9,10 +9,40 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 ## Getting Started
 
-* Maven `coming soon`.
-* Gradle `coming soon`.
-* Download latest [release](https://github.com/amdelamar/jotp/releases).
+* Maven:
 
+```
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+...
+<dependency>
+    <groupId>com.github.amdelamar</groupId>
+    <artifactId>jotp</artifactId>
+    <version>v1.0.0</version>
+</dependency>
+```
+
+* Gradle:
+
+```
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+...
+dependencies {
+    compile 'com.github.amdelamar:jotp:v1.0.0'
+}
+```
+
+* or Download the latest [release](https://github.com/amdelamar/jotp/releases).
+
+
+## Usage
 
 ```
 // Random secret Base32 with 20 bytes (160 bits) length
