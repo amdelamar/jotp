@@ -3,6 +3,7 @@
 [![Build](https://travis-ci.org/amdelamar/jotp.svg?branch=master)](https://travis-ci.org/amdelamar/jotp)
 [![Code Climate](https://codeclimate.com/github/amdelamar/jotp/badges/gpa.svg)](https://codeclimate.com/github/amdelamar/jotp)
 [![License](https://img.shields.io/:license-apache-blue.svg)](https://github.com/amdelamar/jotp/blob/master/LICENSE)
+[![Release](https://img.shields.io/github/tag/amdelamar/jotp.svg?label=JitPack)](https://jitpack.io/#amdelamar/jotp)
 
 OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using [HMAC-based](https://tools.ietf.org/html/rfc4226)) or [Time-based](https://tools.ietf.org/html/rfc6238) algorithms.
 
@@ -11,7 +12,7 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 * Maven:
 
-```
+```xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -28,7 +29,7 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 * Gradle:
 
-```
+```gradle
 repositories {
     ...
     maven { url 'https://jitpack.io' }
@@ -39,12 +40,12 @@ dependencies {
 }
 ```
 
-* or Download the latest [release](https://github.com/amdelamar/jotp/releases).
+* or Download the [latest release](https://github.com/amdelamar/jotp/releases).
 
 
 ## Usage
 
-```
+```java
 // Random secret Base32 with 20 bytes (160 bits) length
 // (Use this to setup 2FA for new accounts).
 String secret = OTP.randomBase32(20);
@@ -55,16 +56,16 @@ String secret = OTP.randomBase32(20);
 String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");
 ```
 
-Show User QR Code <sup>1</sup>
-Easiest way to do this is through Goolge APIs, but I
-plan to add a 'generateImage()' function soon.
+Show the user the QR Code <sup>1</sup>
+
+Easiest way to do this is through Goolge APIs, but I plan to add a 'generateImage()' function soon.
 
 [![QR Image Example](https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://developers.google.com/chart/infographics/docs/qr_codes)
 https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30
 
 After user scans the image with their mobile app we can compare codes.
 
-```
+```java
 // Get User's input code for a login...
 String userEnteredCode = "123456";
 
