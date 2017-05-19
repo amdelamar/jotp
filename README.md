@@ -22,7 +22,7 @@ String secret = OTP.randomBase32(20);
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String code = OTP.createTotp(secret, OTP.timeInHex(), 6, "totp");
+String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");
 ```
 
 Show User QR Code <sup>1</sup>
