@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="author" content="Austin Delamar">
+    <meta name="keywords" content="java,otp,totp,hotp,password,2fa,software,library">
+    <meta name="description" content="" />
+    <meta name="robots" content="all">
+
+    <meta property="og:url" content="https://austindelamar.com/jotp/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Jotp">
+    <meta property="og:image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
+    <meta property="og:description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms.">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="https://austindelamar.com/jotp/">
+    <meta name="twitter:creator" content="Austin Delamar">
+    <meta name="twitter:title" content="Jotp">
+    <meta name="twitter:description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms.">
+    <meta name="twitter:image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
+
+    <link rel="icon" type="image/x-icon" href="img/blue-mobile-32x32.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="highlight/default.css">
+    <script src="highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <title>Jotp - 2FA OTP utility in Java</title>
+</head>
+<body>
+
+<div class="container" style="margin-top:2%;">
+    <div class="row">
+        <div class="twelve columns" style="text-align:center;">
+            <img src="img/blue-mobile-200x200.png" alt="Banner" title="Photo Credit: Typography Images at Pixabay.com" style="max-width: 200px;" />
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-bottom:10%">
+    <div class="row">
+        <div class="twelve columns" style="text-align:center;">
+            <h1 style="font-weight:700">Jotp</h1>
+            <p>
+                OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using <a href="https://tools.ietf.org/html/rfc4226">HMAC-based</a> or <a href="https://tools.ietf.org/html/rfc6238">Time-based</a> algorithms.
+            </p>
+            <p>
+            <a class="button button-primary" target="_blank" href="https://github.com/amdelamar/jotp/releases"><span class="icon-embed" style="font-size:1.5em;margin-right:5px"></span>Download</a>
+            <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/"><span class="icon-github" style="font-size:1.5em;margin-right:5px"></span>View on GitHub</a>
+            <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/issues"><span class="icon-bug" style="font-size:1.5em;margin-right:5px"></span>Report Issue</a>
+            </p>
+        </div>
+        <div class="twelve columns">
+            <hr />
+            <br />
+            <h3>Getting Started</h3>
+            <ul>
+            <li>Maven <code>coming soon</code>.</li>
+            <li>Gradle <code>coming soon</code>.</li>
+            <li>Download Jar <code>coming soon</code>.</li>
+            </ul>
+
+            <pre><code class="java">// Random secret Base32 with 20 bytes (160 bits) length
+// (Use this to setup 2FA for new accounts).
+String secret = OTP.randomBase32(20);
+// Returns: IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ
+
+// Generate a Time-based OTP from the secret, using Unix-time
+// rounded down to the nearest 30 seconds.
+String code = OTP.createTotp(secret, OTP.timeInHex(), 6, "totp");</code></pre>
+            <p>
+            Show User QR Code<sup>1</sup><br>
+            Easiest way to do this is through Goolge APIs, but I plan to add a <code>generateImage()</code> function soon.</p>
+        </div>
+        <div class="four columns">
+            <a href="https://developers.google.com/chart/infographics/docs/qr_codes">
+            <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30" alt="QR Image Example" style="width:unset;border-radius:unset;" /></a>
+        </div>
+        <div class="seven columns">
+            <p><br><br>
+                <i>https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30</i>
+            </p>
+        </div>
+        <div class="twelve columns">
+            <p>After user scans the image with their mobile app...</p>
+            <pre><code class="java">// Get User's input code for a login...
+String userEnteredCode = "123456";
+
+// Verify OTP
+if(OTP.verify(secret, userEnteredCode, 6, "totp")) {
+    // Code valid. Login successful.
+}</code></pre>
+
+            <br />
+            <h3>Details</h3>
+            <p>
+            This code currently supports the standard <a href="https://tools.ietf.org/html/rfc4226">HMAC-based</a> or <a href="https://tools.ietf.org/html/rfc6238">Time-based</a> algorithms. for one-time passwords.
+            <br><br>
+            It was started as an easy way to enable 2-Factor Authentication for Java based web applications, but it can be applied to other Java applications as well.
+            </p>
+
+            <br />
+            <h3>Credit</h3>
+            <p>
+            A project by <a href="https://github.com/amdelamar">Austin Delamar</a> based off of <a href="https://github.com/kamranzafar/libotp">Kamron Zafar's work</a> and other <a href="https://github.com/amdelamar/jotp/graphs/contributors">contributors</a>.<br>
+            <br>
+            If you'd like to contribute, feel free to fork and make changes, then open a pull request to <code>master</code> branch.
+            </p>
+
+            <br />
+            <h3>License</h3>
+
+            <a href="https://github.com/amdelamar/jotp/blob/master/LICENSE">Apache 2.0</a><br>
+            <br>
+            <sup>1</sup> QR code standard is trademarked by <a href="http://www.denso-wave.com/qrcode/index-e.html">Denso Wave, Inc</a>.
+        </div>
+    </div>
+</div>
+</body>
+</html>
