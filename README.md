@@ -11,7 +11,8 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 * Maven `coming soon`.
 * Gradle `coming soon`.
-* Download Jar `coming soon`.
+* Download latest [release](https://github.com/amdelamar/jotp/releases).
+
 
 ```
 // Random secret Base32 with 20 bytes (160 bits) length
@@ -51,9 +52,12 @@ This code currently supports the standard HMAC-based (HOTP [RFC 4226](https://to
 It was started as an easy way to enable 2-Factor Authentication for Java based web applications, but it can be applied to other Java applications as well.
 
 
-## Credit
+## Contribute
 
 A project by [Austin Delamar](https://github.com/amdelamar) based off of [Kamron Zafar's work](https://github.com/kamranzafar/libotp) and other [contributors](https://github.com/amdelamar/jotp/graphs/contributors).
+
+If you'd like to contribute, feel free to fork and make changes, then open a pull request to master branch. 
+
 
 ## License
 
