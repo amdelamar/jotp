@@ -10,6 +10,7 @@ import com.amdelamar.jotp.exception.BadOperationException;
 import com.amdelamar.jotp.exception.OTPException;
 import com.amdelamar.jotp.type.HOTP;
 import com.amdelamar.jotp.type.TOTP;
+import com.amdelamar.jotp.type.Type;
 
 /**
  * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using
@@ -17,12 +18,9 @@ import com.amdelamar.jotp.type.TOTP;
  * 
  * @author amdelamar
  * @see https://github.com/amdelamar/jotp
+ * @since 1.0.0
  */
 public class OTP {
-
-    // Algorithms
-    public static final String TOTP = "totp";
-    public static final String HOTP = "hotp";
 
     public static final int BYTES = 20; // 160 bit
 
@@ -46,7 +44,7 @@ public class OTP {
         }
         return new String(text);
     }
-    
+
     /**
      * Generate a random string in Base32, with the specified length.
      * 
@@ -90,29 +88,32 @@ public class OTP {
      * @param digits
      *            The length of the code (Commonly '6')
      * @param type
-     *            TOTP or HOTP
+     *            Type.TOTP or Type.HOTP
      * @return code
      * @throws BadOperationException
      *             Error when Type is not recognized.
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static String create(String secret, String base, int digits, String type)
+    public static String create(String secret, String base, int digits, Type type)
             throws BadOperationException {
 
         // validate
         validateParameters(secret, base, digits, type);
-        
+
         // convert Base32 secret to Hex
         byte[] bytes = new Base32().decode(secret);
         String key = Hex.encodeHexString(bytes);
 
-        if (type.equalsIgnoreCase(HOTP)) {
+        if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
             return hotp.create(key, base, digits);
-        } else {
+        } else if (type == Type.TOTP) {
             TOTP totp = new TOTP();
             return totp.create(key, base, digits);
+        } else {
+            throw new BadOperationException(
+                    "OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
         }
     }
 
@@ -131,7 +132,7 @@ public class OTP {
      * @param digits
      *            Length of code (Commonly '6')
      * @param type
-     *            TOTP or HOTP
+     *            Type.TOTP or Type.HOTP
      * @return true if valid
      * @throws OTPException
      *             Error when comparing codes.
@@ -140,7 +141,7 @@ public class OTP {
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verify(String secret, String base, String code, int digits, String type)
+    public static boolean verify(String secret, String base, String code, int digits, Type type)
             throws OTPException, BadOperationException {
 
         // validate
@@ -160,10 +161,10 @@ public class OTP {
 
             // generate code to compare
             String ncode = null;
-            if (type.equalsIgnoreCase(HOTP)) {
+            if (type == Type.HOTP) {
                 HOTP hotp = new HOTP();
                 ncode = hotp.create(key, base, digits);
-            } else {
+            } else if (type == Type.TOTP) {
                 TOTP totp = new TOTP();
                 ncode = totp.create(key, base, digits);
             }
@@ -185,12 +186,12 @@ public class OTP {
      * @param digits
      *            Length of code (Commonly '6')
      * @param type
-     *            TOTP or HOTP
+     *            Type.TOTP or Type.HOTP
      * @return true if parameters are valid
      * @throws BadOperationException
      *             Error when parameters invalid.
      */
-    private static boolean validateParameters(String secret, String base, int digits, String type)
+    private static boolean validateParameters(String secret, String base, int digits, Type type)
             throws BadOperationException {
         if (secret == null || secret.isEmpty()) {
             throw new BadOperationException("Secret cannot be null or empty.");
@@ -198,14 +199,15 @@ public class OTP {
         if (base == null || base.isEmpty()) {
             throw new BadOperationException("Base cannot be null or empty.");
         }
-        if (type == null || type.isEmpty()) {
+        if (type == null) {
             throw new BadOperationException("Type cannot be null or empty.");
         }
         if (digits <= 0) {
             throw new BadOperationException("Digits must be a positive integer (e.g. '6').");
         }
-        if (!type.equalsIgnoreCase(HOTP) && !type.equalsIgnoreCase(TOTP)) {
-            throw new BadOperationException("OTP type not recognized.");
+        if (!(type instanceof Type)) {
+            throw new BadOperationException(
+                    "OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
         }
         return true;
     }

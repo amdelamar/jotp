@@ -14,9 +14,10 @@ import com.amdelamar.jotp.exception.BadOperationException;
  * 
  * @author kamranzafar, amdelamar
  * @see https://tools.ietf.org/html/rfc6238
+ * @since 1.0.0
  */
 public class TOTP implements OTPInterface {
-    
+
     /**
      * HmacSHA1, HmacSHA256, HmacSHA512
      */

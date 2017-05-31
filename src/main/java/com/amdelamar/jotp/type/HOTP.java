@@ -15,12 +15,13 @@ import com.amdelamar.jotp.exception.BadOperationException;
  * 
  * @author kamranzafar, amdelamar
  * @see https://tools.ietf.org/html/rfc4226
+ * @since 1.0.0
  */
 public class HOTP implements OTPInterface {
 
     private static final int TRUNCATE_OFFSET = 0;
     private static final boolean CHECKSUM = false;
-    
+
     /**
      * HmacSHA1, HmacSHA256, HmacSHA512
      */
