@@ -1,7 +1,8 @@
 # Jotp
 
-[![Build](https://travis-ci.org/amdelamar/jotp.svg?branch=master)](https://travis-ci.org/amdelamar/jotp)
-[![Code Climate](https://codeclimate.com/github/amdelamar/jotp/badges/gpa.svg)](https://codeclimate.com/github/amdelamar/jotp)
+[![Build](https://img.shields.io/travis/amdelamar/jotp.svg)](https://travis-ci.org/amdelamar/jotp)
+[![Code Climate](https://img.shields.io/codeclimate/github/amdelamar/jotp.svg)](https://codeclimate.com/github/amdelamar/jotp)
+[![Codecov](https://img.shields.io/codecov/c/github/amdelamar/jotp.svg)](https://codecov.io/gh/amdelamar/jotp)
 [![License](https://img.shields.io/:license-apache-blue.svg)](https://github.com/amdelamar/jotp/blob/master/LICENSE)
 [![Release](https://img.shields.io/github/tag/amdelamar/jotp.svg?label=JitPack)](https://jitpack.io/#amdelamar/jotp)
 
@@ -87,7 +88,7 @@ It was started as an easy way to enable 2-Factor Authentication for Java based w
 
 A project by [Austin Delamar](https://github.com/amdelamar) based off of [Kamron Zafar's work](https://github.com/kamranzafar/libotp) and other [contributors](https://github.com/amdelamar/jotp/graphs/contributors).
 
-If you'd like to contribute, feel free to fork and make changes, then open a pull request to master branch. 
+If you'd like to contribute, feel free to fork and make changes, then open a pull request to master branch.
 
 
 ## License
