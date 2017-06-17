@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="author" content="Austin Delamar">
-    <meta name="keywords" content="java,otp,totp,hotp,password,2fa,software,library">
+    <meta name="keywords" content="java,otp,totp,hotp,password,2fa,authentication,software,library">
     <meta name="description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms." />
     <meta name="robots" content="all">
 
+    <!-- Open Graph data -->
     <meta property="og:url" content="https://austindelamar.com/jotp/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
@@ -17,12 +18,18 @@
     <meta property="og:image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
     <meta property="og:description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms.">
 
+    <!-- Twitter Card data -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="https://austindelamar.com/jotp/">
-    <meta name="twitter:creator" content="Austin Delamar">
+    <meta name="twitter:creator" content="amdelamar">
     <meta name="twitter:title" content="Jotp">
     <meta name="twitter:description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms.">
     <meta name="twitter:image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
+
+    <!-- Schema.org markup for Google+ -->
+    <meta itemprop="name" content="Jotp">
+    <meta itemprop="description" content="OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based or Time-based algorithms.">
+    <meta itemprop="image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
 
     <link rel="icon" type="image/x-icon" href="img/blue-mobile-32x32.png">
     <link rel="stylesheet" href="css/style.css">
@@ -95,7 +102,7 @@ String secret = OTP.randomBase32(20);
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");</code></pre>
+String code = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);</code></pre>
             <p>
             Show User QR Code<sup>1</sup><br>
             Easiest way to do this is through Goolge APIs, but I plan to add a <code>generateImage()</code> function soon.</p>
@@ -107,6 +114,8 @@ String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");</code></pre>
         <div class="seven columns">
             <p><br><br>
                 <i>https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30</i>
+                <br><br>
+                (You can use <code>OTP.getURL()</code> to get the <code>otpauth://</code> URL too.)
             </p>
         </div>
         <div class="twelve columns">
@@ -115,7 +124,7 @@ String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");</code></pre>
 String userEnteredCode = "123456";
 
 // Verify OTP
-if(OTP.verify(secret, userEnteredCode, 6, "totp")) {
+if(OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
     // Code valid. Login successful.
 }</code></pre>
 
