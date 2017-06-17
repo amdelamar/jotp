@@ -27,6 +27,13 @@ public class HOTP implements OTPInterface {
      */
     private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
 
+    private static final String LABEL = "hotp";
+
+    @Override
+    public String getLabel() {
+        return LABEL;
+    }
+
     /**
      * Create a one-time-password with the given key, base, and digits.
      * 
