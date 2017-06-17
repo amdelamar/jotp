@@ -211,4 +211,49 @@ public class OTP {
         }
         return true;
     }
+
+    /**
+     * Gets the "otpauth://" URL for adding to 2FA compatible devices/apps.
+     * 
+     * @param secret
+     *            Shhhhh. (Base32)
+     * @param digits
+     *            Length of code (Commonly '6')
+     * @param type
+     *            Type.TOTP or Type.HOTP
+     * @param issuer
+     *            Company or Domain name
+     * @param email
+     *            Username or Email address
+     * @return otpauth://...
+     * @throws OTPException
+     * @throws BadOperationException
+     */
+    public static String getURL(String secret, int digits, Type type, String issuer, String email)
+            throws OTPException, BadOperationException {
+
+        validateParameters(secret, secret, digits, type);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("otpauth://");
+
+        if (type == Type.HOTP) {
+            sb.append("hotp/");
+        } else if (type == Type.TOTP) {
+            sb.append("totp/");
+        }
+
+        sb.append(issuer + ":");
+        sb.append(email + "?");
+        sb.append("secret=" + secret);
+        sb.append("&issuer=" + issuer);
+        sb.append("&algorithm=SHA1");
+        sb.append("&digits=" + digits);
+
+        if (type == Type.TOTP) {
+            sb.append("&period=30");
+        }
+
+        return sb.toString();
+    }
 }

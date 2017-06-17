@@ -12,6 +12,7 @@ import org.junit.runners.JUnit4;
 
 import com.amdelamar.jotp.OTP;
 import com.amdelamar.jotp.exception.BadOperationException;
+import com.amdelamar.jotp.exception.OTPException;
 import com.amdelamar.jotp.type.Type;
 
 /**
@@ -59,13 +60,33 @@ public class Tests {
 
         // run 5 tests
         for (int i = 0; i < 5; i++) {
-            System.out.println(OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12));
+            assertNotNull(OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12));
         }
 
         // run 5 tests
         for (int i = 0; i < 5; i++) {
-            System.out.println(OTP.randomBase32(OTP.BYTES));
+            assertNotNull(OTP.randomBase32(OTP.BYTES));
         }
+    }
+
+    @Test
+    public void urlTests() throws OTPException, BadOperationException {
+
+        String url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 6, Type.HOTP, "Example1",
+                "test1@example.com");
+        assertNotNull(url);
+
+        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 4, Type.HOTP, "Example2",
+                "test2@example.com");
+        assertNotNull(url);
+
+        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 6, Type.TOTP, "Example3",
+                "test3@example.com");
+        assertNotNull(url);
+
+        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 4, Type.TOTP, "Example4",
+                "test4@example.com");
+        assertNotNull(url);
     }
 
     @Test
@@ -75,8 +96,6 @@ public class Tests {
         for (int i = 0; i < 5; i++) {
             String secret = OTP.randomBase32(OTP.BYTES);
             String code1 = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);
-
-            System.out.println(OTP.timeInHex());
 
             // 30 sec window, so wait just a second
             // If its beyond 30sec since the first OTP,
