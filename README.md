@@ -24,7 +24,7 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 <dependency>
     <groupId>com.github.amdelamar</groupId>
     <artifactId>jotp</artifactId>
-    <version>v1.0.0</version>
+    <version>v1.1.0</version>
 </dependency>
 ```
 
@@ -37,7 +37,7 @@ repositories {
 }
 ...
 dependencies {
-    compile 'com.github.amdelamar:jotp:v1.0.0'
+    compile 'com.github.amdelamar:jotp:v1.1.0'
 }
 ```
 
