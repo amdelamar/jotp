@@ -32,8 +32,9 @@
     <meta itemprop="image" content="https://austindelamar.com/jotp/img/blue-mobile-200x200.png">
 
     <link rel="icon" type="image/x-icon" href="img/blue-mobile-32x32.png">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="highlight/default.css">
+    <link rel="stylesheet" href="https://austindelamar.com/osseous/1.2.0/osseous.min.css">
+    <link rel="stylesheet" href="vendor/icomoon/icomoon.css">
+    <link rel="stylesheet" href="vendor/highlight/default.css">
     <title>Jotp - 2FA OTP utility in Java</title>
 </head>
 <body>
@@ -49,15 +50,16 @@
 <div class="container" style="margin-bottom:10%">
     <div class="row">
         <div class="twelve columns" style="text-align:center;">
-            <h1 style="font-weight:700">Jotp</h1>
+            <h1>Jotp</h1>
             <p>
                 OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using <a href="https://tools.ietf.org/html/rfc4226">HMAC-based</a> or <a href="https://tools.ietf.org/html/rfc6238">Time-based</a> algorithms.
             </p>
             <p>
-            <a class="button button-primary" target="_blank" href="https://github.com/amdelamar/jotp/releases"><span class="icon-embed" style="font-size:1.5em;margin-right:5px"></span>Download</a>
+            <a class="button button-blue" target="_blank" href="https://github.com/amdelamar/jotp/releases"><span class="icon-embed" style="font-size:1.5em;margin-right:5px"></span>Download</a>
             <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/"><span class="icon-github" style="font-size:1.5em;margin-right:5px"></span>View on GitHub</a>
             <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/issues"><span class="icon-bug" style="font-size:1.5em;margin-right:5px"></span>Report Issue</a>
             </p>
+            <code>v1.1.0</code> - 17 Jun 2017 - <code>17KB</code>
         </div>
         <div class="twelve columns">
             <hr />
@@ -154,7 +156,7 @@ if(OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
     </div>
 </div>
 
-<script src="highlight/highlight.pack.js"></script>
+<script src="vendor/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
 </body>
