@@ -8,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.amdelamar.jotp.exception.BadOperationException;
-
 /**
  * Hmac based OTP class implements OTPInterface
  * 
@@ -28,6 +26,11 @@ public class HOTP implements OTPInterface {
     private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
 
     private static final String LABEL = "hotp";
+
+    /**
+     * These are used to calculate the check-sum digits. [0 1 2 3 4 5 6 7 8 9]
+     */
+    private static final int[] doubleDigits = { 0, 2, 4, 6, 8, 1, 3, 5, 7, 9 };
 
     @Override
     public String getLabel() {
@@ -49,17 +52,12 @@ public class HOTP implements OTPInterface {
      */
     public String create(String secret, String base, int digits) {
         try {
-            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM,
-                    TRUNCATE_OFFSET, HMACSHA1_ALGORITHM);
+            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET, HMACSHA1_ALGORITHM);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    // These are used to calculate the check-sum digits.
-    // 0 1 2 3 4 5 6 7 8 9
-    private static final int[] doubleDigits = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9};
 
     /**
      * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
@@ -134,9 +132,12 @@ public class HOTP implements OTPInterface {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    private static String generateHotp(byte[] secret, long movingFactor, int digits,
-            boolean addChecksum, int truncationOffset, String crypto)
-            throws NoSuchAlgorithmException, InvalidKeyException {
+    private static String generateHotp(byte[] secret,
+            long movingFactor,
+            int digits,
+            boolean addChecksum,
+            int truncationOffset,
+            String crypto) throws NoSuchAlgorithmException, InvalidKeyException {
         // put movingFactor value into text byte array
         byte[] text = new byte[8];
         for (int i = text.length - 1; i >= 0; i--) {
@@ -152,8 +153,8 @@ public class HOTP implements OTPInterface {
         if ((0 <= truncationOffset) && (truncationOffset < (hash.length - 4))) {
             offset = truncationOffset;
         }
-        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
-                | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
+        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16) | ((hash[offset + 2] & 0xff) << 8)
+                | (hash[offset + 3] & 0xff);
 
         int otp = binary % ((int) Math.pow(10, digits));
         if (addChecksum) {

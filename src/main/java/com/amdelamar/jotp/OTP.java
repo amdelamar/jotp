@@ -6,8 +6,6 @@ import java.nio.ByteBuffer;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 
-import com.amdelamar.jotp.exception.BadOperationException;
-import com.amdelamar.jotp.exception.OTPException;
 import com.amdelamar.jotp.type.HOTP;
 import com.amdelamar.jotp.type.TOTP;
 import com.amdelamar.jotp.type.Type;
@@ -71,9 +69,10 @@ public class OTP {
      *             Error when generating Unix time.
      */
     public static String timeInHex() throws IOException {
-        long time = (long) Math
-                .floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
-        byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
+        long time = (long) Math.floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
+        byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
+                .putLong(time)
+                .array();
         return Hex.encodeHexString(longBytes);
     }
 
@@ -81,7 +80,7 @@ public class OTP {
      * Create a one-time-password with the given key, base, digits, and OTP.Type.
      * 
      * @param secret
-     *            The secret. Shhhhhh!
+     *            The secret.
      * @param base
      *            The offset. (e.g. TOTP base is time from UTC rounded to the half-second while HOTP
      *            is a counter)
@@ -90,13 +89,12 @@ public class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return code
-     * @throws BadOperationException
+     * @throws IllegalArgumentException
      *             Error when Type is not recognized.
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static String create(String secret, String base, int digits, Type type)
-            throws BadOperationException {
+    public static String create(String secret, String base, int digits, Type type) throws IllegalArgumentException {
 
         // validate
         validateParameters(secret, base, digits, type);
@@ -108,12 +106,9 @@ public class OTP {
         if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
             return hotp.create(key, base, digits);
-        } else if (type == Type.TOTP) {
+        } else {
             TOTP totp = new TOTP();
             return totp.create(key, base, digits);
-        } else {
-            throw new BadOperationException(
-                    "OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
         }
     }
 
@@ -134,46 +129,39 @@ public class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return true if valid
-     * @throws OTPException
-     *             Error when comparing codes.
-     * @throws BadOperationException
+     * @throws IllegalArgumentException
      *             Error when parameters invalid.
      * @see https://tools.ietf.org/html/rfc4226
      * @see https://tools.ietf.org/html/rfc6238
      */
-    public static boolean verify(String secret, String base, String code, int digits, Type type)
-            throws OTPException, BadOperationException {
+    public static boolean verify(String secret, String base, String code, int digits, Type type) throws IllegalArgumentException {
 
         // validate
         validateParameters(secret, base, digits, type);
         if (code == null || code.isEmpty()) {
-            throw new BadOperationException("Code cannot be null or empty.");
+            throw new IllegalArgumentException("Code cannot be null or empty.");
         }
         if (code.length() != digits) {
             // code length must match digits
             return false;
         }
 
-        try {
-            // convert Base32 secret to Hex
-            byte[] bytes = new Base32().decode(secret);
-            String key = Hex.encodeHexString(bytes);
+        // convert Base32 secret to Hex
+        byte[] bytes = new Base32().decode(secret);
+        String key = Hex.encodeHexString(bytes);
 
-            // generate code to compare
-            String ncode = null;
-            if (type == Type.HOTP) {
-                HOTP hotp = new HOTP();
-                ncode = hotp.create(key, base, digits);
-            } else if (type == Type.TOTP) {
-                TOTP totp = new TOTP();
-                ncode = totp.create(key, base, digits);
-            }
-
-            // compare OTP codes
-            return code.equals(ncode);
-        } catch (Exception e) {
-            throw new OTPException(e.getMessage());
+        // generate code to compare
+        String ncode = null;
+        if (type == Type.HOTP) {
+            HOTP hotp = new HOTP();
+            ncode = hotp.create(key, base, digits);
+        } else if (type == Type.TOTP) {
+            TOTP totp = new TOTP();
+            ncode = totp.create(key, base, digits);
         }
+
+        // compare OTP codes
+        return code.equals(ncode);
     }
 
     /**
@@ -188,26 +176,24 @@ public class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return true if parameters are valid
-     * @throws BadOperationException
+     * @throws IllegalArgumentException
      *             Error when parameters invalid.
      */
-    private static boolean validateParameters(String secret, String base, int digits, Type type)
-            throws BadOperationException {
+    private static boolean validateParameters(String secret, String base, int digits, Type type) throws IllegalArgumentException {
         if (secret == null || secret.isEmpty()) {
-            throw new BadOperationException("Secret cannot be null or empty.");
+            throw new IllegalArgumentException("Secret cannot be null or empty.");
         }
         if (base == null || base.isEmpty()) {
-            throw new BadOperationException("Base cannot be null or empty.");
+            throw new IllegalArgumentException("Base cannot be null or empty.");
         }
         if (type == null) {
-            throw new BadOperationException("Type cannot be null or empty.");
+            throw new IllegalArgumentException("Type cannot be null or empty.");
         }
         if (digits <= 0) {
-            throw new BadOperationException("Digits must be a positive integer (e.g. '6').");
+            throw new IllegalArgumentException("Digits must be a positive integer (e.g. '6').");
         }
         if (!(type instanceof Type)) {
-            throw new BadOperationException(
-                    "OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
+            throw new IllegalArgumentException("OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
         }
         return true;
     }
@@ -226,11 +212,9 @@ public class OTP {
      * @param email
      *            Username or Email address
      * @return otpauth://...
-     * @throws OTPException
-     * @throws BadOperationException
+     * @throws IllegalArgumentException
      */
-    public static String getURL(String secret, int digits, Type type, String issuer, String email)
-            throws OTPException, BadOperationException {
+    public static String getURL(String secret, int digits, Type type, String issuer, String email) throws IllegalArgumentException {
 
         validateParameters(secret, secret, digits, type);
 

@@ -7,8 +7,6 @@ import java.security.GeneralSecurityException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.amdelamar.jotp.exception.BadOperationException;
-
 /**
  * Time based OTP class implements OTPInterface
  * 
@@ -22,7 +20,7 @@ public class TOTP implements OTPInterface {
      * HmacSHA1, HmacSHA256, HmacSHA512
      */
     private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
-    
+
     private static final String LABEL = "totp";
 
     @Override
@@ -124,8 +122,8 @@ public class TOTP implements OTPInterface {
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;
 
-        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
-                | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
+        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16) | ((hash[offset + 2] & 0xff) << 8)
+                | (hash[offset + 3] & 0xff);
 
         int otp = binary % ((int) Math.pow(10, digits));
 
