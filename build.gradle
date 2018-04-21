@@ -58,7 +58,7 @@ bintray {
 	pkg {
 		repo = 'maven'
 		name = 'jotp'
-		desc = 'OTP (One Time Password) utility in Java'
+		desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
 		licenses = ['Apache-2.0']
 		websiteUrl = 'https://github.com/amdelamar/jotp/'
         issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
