@@ -1,21 +1,27 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'maven'
+plugins {
+  id 'java'
+  id 'java-library'
+  id 'jacoco'
+  id 'maven'
+  id 'maven-publish'
+  id 'com.jfrog.bintray' version '1.8.0'
+}
 
 group = 'com.github.amdelamar'
 version = '1.1.0'
-
+description = 'OTP (One Time Password) utility in Java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    compile "commons-codec:commons-codec:1.8"
-    testCompile "junit:junit:4.12"
+    implementation 'commons-codec:commons-codec:1.8'
+    
+    testCompile 'junit:junit:4.12'
 }
 
 jar {
@@ -33,4 +39,33 @@ jacocoTestReport {
         xml.enabled true
         html.enabled false
     }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+          from components.java
+        }
+    }
+}
+
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+	publications = ['MyPublication']
+	publish = true
+	override = true
+	pkg {
+		repo = 'maven'
+		name = 'jotp'
+		desc = 'OTP (One Time Password) utility in Java'
+		licenses = ['Apache-2.0']
+		websiteUrl = 'https://github.com/amdelamar/jotp/'
+        issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
+        vcsUrl = 'https://github.com/amdelamar/jotp.git'
+        githubRepo = 'amdelamar/jotp' // Optional Github repository
+        githubReleaseNotesFile = 'README.md' // Optional Github release notes
+		labels = ['otp', '2fa', 'totp', 'hotp']
+		publicDownloadNumbers = true
+	}
 }
