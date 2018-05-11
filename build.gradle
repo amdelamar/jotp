@@ -16,57 +16,57 @@ targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
-    jcenter()
+  jcenter()
 }
 
 dependencies {
-    implementation 'commons-codec:commons-codec:1.8'
-    
-    testCompile 'junit:junit:4.12'
+  implementation 'commons-codec:commons-codec:1.8'
+  
+  testCompile 'junit:junit:4.12'
 }
 
 jar {
-    baseName = 'jotp'
-    from sourceSets.main.allSource
+  baseName = 'jotp'
+  from sourceSets.main.allSource
 }
 
 javadoc {
-	source = sourceSets.main.allJava
-	classpath = configurations.compile
+  source = sourceSets.main.allJava
+  classpath = configurations.compile
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
+  reports {
+    xml.enabled true
+    html.enabled false
+  }
 }
 
 publishing {
-    publications {
-        MyPublication(MavenPublication) {
-          from components.java
-        }
+  publications {
+    MyPublication(MavenPublication) {
+      from components.java
     }
+  }
 }
 
 bintray {
-	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-	publications = ['MyPublication']
-	publish = true
-	override = true
-	pkg {
-		repo = 'maven'
-		name = 'jotp'
-		desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
-		licenses = ['Apache-2.0']
-		websiteUrl = 'https://github.com/amdelamar/jotp/'
-        issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
-        vcsUrl = 'https://github.com/amdelamar/jotp.git'
-        githubRepo = 'amdelamar/jotp' // Optional Github repository
-        githubReleaseNotesFile = 'README.md' // Optional Github release notes
-		labels = ['otp', '2fa', 'totp', 'hotp']
-		publicDownloadNumbers = true
-	}
+  user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+  key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+  publications = ['MyPublication']
+  publish = true
+  override = true
+  pkg {
+    repo = 'maven'
+    name = 'jotp'
+    desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
+    licenses = ['Apache-2.0']
+    websiteUrl = 'https://github.com/amdelamar/jotp/'
+    issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
+    vcsUrl = 'https://github.com/amdelamar/jotp.git'
+    githubRepo = 'amdelamar/jotp' // Optional Github repository
+    githubReleaseNotesFile = 'README.md' // Optional Github release notes
+    labels = ['otp', '2fa', 'totp', 'hotp']
+    publicDownloadNumbers = true
+  }
 }
