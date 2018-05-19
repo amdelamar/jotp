@@ -16,9 +16,13 @@ import com.amdelamar.jotp.type.Type;
  * @see <a href="https://github.com/amdelamar/jotp">https://github.com/amdelamar/jotp</a>
  * @since 1.0.0
  */
-public class OTP {
+public final class OTP {
 
     public static final int BYTES = 20; // 160 bit
+    
+    private OTP() {
+        // prevent instantiation
+    }
 
     /**
      * Generate a random string using the characters provided, with the specified length.

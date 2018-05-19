@@ -27,9 +27,6 @@ public class OTPTests {
 
     @Test
     public void constructorTests() {
-        OTP otp = new OTP();
-        assertNotNull(otp);
-
         HOTP hotp = new HOTP();
         assertNotNull(hotp);
 
