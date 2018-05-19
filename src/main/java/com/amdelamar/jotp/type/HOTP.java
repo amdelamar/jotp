@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Hmac based OTP class implements OTPInterface
  * 
  * @author kamranzafar, amdelamar
- * @see https://tools.ietf.org/html/rfc4226
+ * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
  * @since 1.0.0
  */
 public class HOTP implements OTPInterface {
@@ -47,12 +47,12 @@ public class HOTP implements OTPInterface {
      * @param digits
      *            The length of the code (Commonly '6')
      * @return code
-     * @throws BadOperationException
-     * @see https://tools.ietf.org/html/rfc4226
+     * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
      */
     public String create(String secret, String base, int digits) {
         try {
-            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET, HMACSHA1_ALGORITHM);
+            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET,
+                    HMACSHA1_ALGORITHM);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -153,8 +153,8 @@ public class HOTP implements OTPInterface {
         if ((0 <= truncationOffset) && (truncationOffset < (hash.length - 4))) {
             offset = truncationOffset;
         }
-        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16) | ((hash[offset + 2] & 0xff) << 8)
-                | (hash[offset + 3] & 0xff);
+        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
+                | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
 
         int otp = binary % ((int) Math.pow(10, digits));
         if (addChecksum) {

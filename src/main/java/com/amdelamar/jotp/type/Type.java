@@ -4,7 +4,6 @@ package com.amdelamar.jotp.type;
  * OTP Type enumeration constant.
  * 
  * @author amdelamar
- * @see https://github.com/amdelamar/jotp
  * @since 1.0.0
  */
 public enum Type {

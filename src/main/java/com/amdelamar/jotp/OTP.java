@@ -13,7 +13,7 @@ import com.amdelamar.jotp.type.Type;
  * HMAC-based) or Time-based algorithms.
  * 
  * @author amdelamar
- * @see https://github.com/amdelamar/jotp
+ * @see <a href="https://github.com/amdelamar/jotp">https://github.com/amdelamar/jotp</a>
  * @since 1.0.0
  */
 public class OTP {
@@ -89,8 +89,8 @@ public class OTP {
      * @return code
      * @throws IllegalArgumentException
      *             Error when Type is not recognized.
-     * @see https://tools.ietf.org/html/rfc4226
-     * @see https://tools.ietf.org/html/rfc6238
+     * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
+     * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
     public static String create(String secret, String base, int digits, Type type) throws IllegalArgumentException {
 
@@ -129,10 +129,11 @@ public class OTP {
      * @return true if valid
      * @throws IllegalArgumentException
      *             Error when parameters invalid.
-     * @see https://tools.ietf.org/html/rfc4226
-     * @see https://tools.ietf.org/html/rfc6238
+     * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
+     * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
-    public static boolean verify(String secret, String base, String code, int digits, Type type) throws IllegalArgumentException {
+    public static boolean verify(String secret, String base, String code, int digits, Type type)
+            throws IllegalArgumentException {
 
         // validate
         validateParameters(secret, base, digits, type);
@@ -177,7 +178,8 @@ public class OTP {
      * @throws IllegalArgumentException
      *             Error when parameters invalid.
      */
-    private static boolean validateParameters(String secret, String base, int digits, Type type) throws IllegalArgumentException {
+    private static boolean validateParameters(String secret, String base, int digits, Type type)
+            throws IllegalArgumentException {
         if (secret == null || secret.isEmpty()) {
             throw new IllegalArgumentException("Secret cannot be null or empty.");
         }
@@ -210,9 +212,11 @@ public class OTP {
      * @param email
      *            Username or Email address
      * @return otpauth://...
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException 
+     *             Error when parameters invalid.
      */
-    public static String getURL(String secret, int digits, Type type, String issuer, String email) throws IllegalArgumentException {
+    public static String getURL(String secret, int digits, Type type, String issuer, String email)
+            throws IllegalArgumentException {
 
         validateParameters(secret, secret, digits, type);
 

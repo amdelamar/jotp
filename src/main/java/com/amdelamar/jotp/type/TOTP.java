@@ -11,7 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Time based OTP class implements OTPInterface
  * 
  * @author kamranzafar, amdelamar
- * @see https://tools.ietf.org/html/rfc6238
+ * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
  * @since 1.0.0
  */
 public class TOTP implements OTPInterface {
@@ -38,8 +38,7 @@ public class TOTP implements OTPInterface {
      * @param digits
      *            The length of the code (Commonly '6')
      * @return code
-     * @throws BadOperationException
-     * @see https://tools.ietf.org/html/rfc6238
+     * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
     public String create(String secret, String base, int digits) {
         try {
@@ -77,7 +76,7 @@ public class TOTP implements OTPInterface {
      * 
      * @param hex
      *            the HEX string
-     * @returna byte array
+     * @return byte array
      */
     private static byte[] hexStr2Bytes(String hex) {
         // Adding one byte to get the right conversion
@@ -103,7 +102,7 @@ public class TOTP implements OTPInterface {
      *            number of digits to return
      * @param crypto
      *            the crypto function to use
-     * @returna numeric String in base 10 that includes {@link truncationDigits} digits
+     * @return numeric String in base 10 that includes digits
      */
     private static String generateTotp(String key, String time, int digits, String crypto) {
         // Using the counter
