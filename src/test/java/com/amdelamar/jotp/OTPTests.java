@@ -38,6 +38,15 @@ public class OTPTests {
     }
 
     @Test
+    public void labelTests() {
+        HOTP hotp = new HOTP();
+        assertEquals("hotp", hotp.getLabel());
+
+        TOTP totp = new TOTP();
+        assertEquals("totp", totp.getLabel());
+    }
+
+    @Test
     public void randomTests() {
 
         assertNotNull(OTP.randomBase32(0));
