@@ -2,9 +2,7 @@ package com.amdelamar.jotp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
+import java.security.SecureRandom;
 
 import com.amdelamar.jotp.type.HOTP;
 import com.amdelamar.jotp.type.TOTP;
@@ -35,7 +33,7 @@ public class OTP {
         if (length < 1) {
             length = BYTES;
         }
-        java.security.SecureRandom random = new java.security.SecureRandom();
+        SecureRandom random = new SecureRandom();
         char[] text = new char[length];
         for (int i = 0; i < length; i++) {
             text[i] = characters.charAt(random.nextInt(characters.length()));
@@ -55,10 +53,10 @@ public class OTP {
             length = BYTES;
         }
         byte[] bytes = new byte[length];
-        java.security.SecureRandom random = new java.security.SecureRandom();
+        SecureRandom random = new SecureRandom();
         random.nextBytes(bytes);
 
-        return new Base32().encodeToString(bytes);
+        return new org.apache.commons.codec.binary.Base32().encodeToString(bytes);
     }
 
     /**
@@ -73,7 +71,7 @@ public class OTP {
         byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();
-        return Hex.encodeHexString(longBytes);
+        return org.apache.commons.codec.binary.Hex.encodeHexString(longBytes);
     }
 
     /**
@@ -100,8 +98,8 @@ public class OTP {
         validateParameters(secret, base, digits, type);
 
         // convert Base32 secret to Hex
-        byte[] bytes = new Base32().decode(secret);
-        String key = Hex.encodeHexString(bytes);
+        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
+        String key = org.apache.commons.codec.binary.Hex.encodeHexString(bytes);
 
         if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
@@ -147,8 +145,8 @@ public class OTP {
         }
 
         // convert Base32 secret to Hex
-        byte[] bytes = new Base32().decode(secret);
-        String key = Hex.encodeHexString(bytes);
+        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
+        String key = org.apache.commons.codec.binary.Hex.encodeHexString(bytes);
 
         // generate code to compare
         String ncode = null;

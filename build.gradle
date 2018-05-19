@@ -22,7 +22,7 @@ repositories {
 dependencies {
   implementation 'commons-codec:commons-codec:1.8'
   
-  testCompile 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.12'
 }
 
 jar {
