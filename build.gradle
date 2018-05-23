@@ -8,7 +8,7 @@ plugins {
   id 'org.sonarqube' version '2.6.2'
 }
 
-group = 'com.github.amdelamar'
+group = 'com.amdelamar'
 version = '1.1.0'
 description = 'OTP (One Time Password) utility in Java'
 sourceCompatibility = 1.8
@@ -21,8 +21,7 @@ repositories {
 
 dependencies {
   implementation 'commons-codec:commons-codec:1.8'
-  
-  testImplementation 'junit:junit:4.12'
+  testCompile 'junit:junit:4.12'
 }
 
 jar {
@@ -83,7 +82,7 @@ bintray {
     name = 'jotp'
     desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
     licenses = ['Apache-2.0']
-    websiteUrl = 'https://github.com/amdelamar/jotp/'
+    websiteUrl = 'https://austindelamar.com/jotp/'
     issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
     vcsUrl = 'https://github.com/amdelamar/jotp.git'
     githubRepo = 'amdelamar/jotp' // Optional Github repository
