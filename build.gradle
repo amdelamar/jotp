@@ -84,7 +84,7 @@ bintray {
     licenses = ['Apache-2.0']
     websiteUrl = 'https://austindelamar.com/jotp/'
     issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
-    vcsUrl = 'https://github.com/amdelamar/jotp.git'
+    vcsUrl = 'git://github.com/amdelamar/jotp.git'
     githubRepo = 'amdelamar/jotp' // Optional Github repository
     githubReleaseNotesFile = 'README.md' // Optional Github release notes
     labels = ['otp', '2fa', 'totp', 'hotp']
