@@ -54,7 +54,7 @@ String secret = OTP.randomBase32(20);
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String code = OTP.create(secret, OTP.timeInHex(), 6, "totp");
+String code = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);
 ```
 
 Show the user the QR Code <sup>1</sup>
@@ -71,7 +71,7 @@ After user scans the image with their mobile app we can compare codes.
 String userEnteredCode = "123456";
 
 // Verify OTP
-if(OTP.verify(secret, userEnteredCode, 6, "totp")) {
+if(OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
     // Code valid. Login successful.
 }
 ```

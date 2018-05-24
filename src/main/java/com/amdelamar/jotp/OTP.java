@@ -19,7 +19,7 @@ import com.amdelamar.jotp.type.Type;
 public final class OTP {
 
     public static final int BYTES = 20; // 160 bit
-    
+
     private OTP() {
         // prevent instantiation
     }
@@ -71,7 +71,18 @@ public final class OTP {
      *             Error when generating Unix time.
      */
     public static String timeInHex() throws IOException {
-        long time = (long) Math.floor(Math.round(((double) System.currentTimeMillis()) / 1000.0) / 30L);
+        return timeInHex(System.currentTimeMillis());
+    }
+
+    /**
+     * A quick method to get a Time rounded down to the nearest 30 seconds.
+     * @param timeInMillis long (like <code>System.currentTimeMillis()</code>)
+     * @return String Hex time
+     * @throws IOException
+     *             Error when generating Unix time.
+     */
+    public static String timeInHex(long timeInMillis) throws IOException {
+        long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30L);
         byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();
