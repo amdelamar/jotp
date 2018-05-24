@@ -137,7 +137,7 @@ public class OTPTests {
             String code2 = OTP.create(secret, "1", 6, Type.HOTP);
             assertEquals(code1, code2);
             assertTrue(OTP.verify(secret, "1", code2, 6, Type.HOTP));
-            
+
             // Indefinite window of opportunity here.
             // Next generated code SHOULD be different than the previous.
 
@@ -147,8 +147,7 @@ public class OTPTests {
     }
 
     @Test
-    public void nullTests() {
-
+    public void badSecretTests() {
         try {
             // bad secret
             OTP.create(null, OTP.timeInHex(), 6, Type.TOTP);
@@ -156,7 +155,7 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
-        
+
         try {
             // empty secret
             OTP.create("", OTP.timeInHex(), 6, Type.TOTP);
@@ -164,16 +163,20 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
-        
+
         try {
             // short secret
-            OTP.create("123", OTP.timeInHex().substring(3), 6, Type.TOTP);
+            OTP.create("123", OTP.timeInHex()
+                    .substring(3), 6, Type.TOTP);
             // should be ok
         } catch (Exception e) {
             // bad exception
             fail("short secret caused a problem");
         }
+    }
 
+    @Test
+    public void badBaseTests() {
         try {
             // bad base
             OTP.create("123", null, 6, Type.TOTP);
@@ -181,7 +184,7 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
-        
+
         try {
             // empty base
             OTP.create("123", "", 6, Type.TOTP);
@@ -189,7 +192,10 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
+    }
 
+    @Test
+    public void badDigitTests() {
         try {
             // bad digits
             OTP.create("123", OTP.timeInHex(), 0, Type.TOTP);
@@ -205,7 +211,10 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
+    }
 
+    @Test
+    public void badCodeTests() {
         try {
             // null verify code
             OTP.verify("123", OTP.timeInHex(), null, 6, Type.TOTP);
