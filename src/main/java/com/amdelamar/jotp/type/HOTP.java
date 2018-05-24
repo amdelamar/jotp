@@ -24,7 +24,6 @@ public class HOTP implements OTPInterface {
      * HmacSHA1, HmacSHA256, HmacSHA512
      */
     private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
-
     private static final String LABEL = "hotp";
 
     /**

@@ -20,7 +20,6 @@ public class TOTP implements OTPInterface {
      * HmacSHA1, HmacSHA256, HmacSHA512
      */
     private static final String HMACSHA1_ALGORITHM = "HmacSHA1";
-
     private static final String LABEL = "totp";
 
     @Override
@@ -41,44 +40,39 @@ public class TOTP implements OTPInterface {
      * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
     public String create(String secret, String base, int digits) {
-        try {
-            return generateTotp(secret, base, digits, HMACSHA1_ALGORITHM);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return generateTotp(secret, base, digits, HMACSHA1_ALGORITHM);
     }
 
     /**
-     * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
-     * Authentication Code with the crypto hash algorithm as a parameter.
+     * Uses the JCE to provide the cryptographic hash. HMAC computes a Hashed Message
+     * Authentication Code with the hash algorithm as a parameter.
      * 
-     * @param crypto
-     *            the crypto algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
+     * @param alg
+     *            algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
      * @param keyBytes
      *            the bytes to use for the HMAC key
      * @param text
      *            the message or text to be authenticated
      */
-    private static byte[] hmac(String crypto, byte[] keyBytes, byte[] text) {
+    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text) {
         try {
-            Mac hmac = Mac.getInstance(crypto);
+            Mac hmac = Mac.getInstance(alg);
             SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
             hmac.init(macKey);
             return hmac.doFinal(text);
-        } catch (GeneralSecurityException gse) {
-            throw new UndeclaredThrowableException(gse);
+        } catch (GeneralSecurityException e) {
+            throw new UndeclaredThrowableException(e);
         }
     }
 
     /**
-     * This method converts a HEX string to Byte[]
+     * Converts a Hex based string to byte[]
      * 
      * @param hex
      *            the HEX string
      * @return byte array
      */
-    private static byte[] hexStr2Bytes(String hex) {
+    private static byte[] hexStringToBytes(String hex) {
         // Adding one byte to get the right conversion
         // Values starting with "0" can be converted
         byte[] bArray = new BigInteger("10" + hex, 16).toByteArray();
@@ -92,7 +86,7 @@ public class TOTP implements OTPInterface {
     }
 
     /**
-     * This method generates a TOTP value for the given set of parameters.
+     * Generates a TOTP value for the given set of parameters.
      * 
      * @param key
      *            the shared secret, HEX encoded
@@ -113,8 +107,8 @@ public class TOTP implements OTPInterface {
         }
 
         // Get the HEX in a Byte[]
-        byte[] msg = hexStr2Bytes(time);
-        byte[] k = hexStr2Bytes(key);
+        byte[] msg = hexStringToBytes(time);
+        byte[] k = hexStringToBytes(key);
 
         byte[] hash = hmac(crypto, k, msg);
 
