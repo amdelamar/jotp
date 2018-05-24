@@ -156,10 +156,26 @@ public class OTPTests {
         } catch (Exception e) {
             // good catch
         }
+        
+        try {
+            // bad secret
+            OTP.create("", OTP.timeInHex(), 6, Type.TOTP);
+            fail("empty secret not detected");
+        } catch (Exception e) {
+            // good catch
+        }
 
         try {
             // bad base
             OTP.create("123", null, 6, Type.TOTP);
+            fail("null base not detected");
+        } catch (Exception e) {
+            // good catch
+        }
+        
+        try {
+            // bad base
+            OTP.create("123", "", 6, Type.TOTP);
             fail("null base not detected");
         } catch (Exception e) {
             // good catch

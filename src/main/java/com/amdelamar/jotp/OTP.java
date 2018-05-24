@@ -207,9 +207,6 @@ public final class OTP {
         if (digits <= 0) {
             throw new IllegalArgumentException("Digits must be a positive integer (e.g. '6').");
         }
-        if (!(type instanceof Type)) {
-            throw new IllegalArgumentException("OTP Type not recognized. Expected Type.TOTP or Type.HOTP");
-        }
         return true;
     }
 
