@@ -169,7 +169,7 @@ public final class OTP {
         if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
             ncode = hotp.create(key, base, digits);
-        } else if (type == Type.TOTP) {
+        } else {
             TOTP totp = new TOTP();
             ncode = totp.create(key, base, digits);
         }
@@ -237,7 +237,7 @@ public final class OTP {
 
         if (type == Type.HOTP) {
             sb.append("hotp/");
-        } else if (type == Type.TOTP) {
+        } else {
             sb.append("totp/");
         }
 
