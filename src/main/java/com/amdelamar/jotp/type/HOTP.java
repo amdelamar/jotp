@@ -1,7 +1,5 @@
 package com.amdelamar.jotp.type;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -46,38 +44,34 @@ public class HOTP implements OTPInterface {
      * @param digits
      *            The length of the code (Commonly '6')
      * @return code
+     * @throws NoSuchAlgorithmException when HMAC is not available on this jvm
+     * @throws InvalidKeyException when secret is invalid
      * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
      */
-    public String create(String secret, String base, int digits) {
-        try {
-            return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET,
-                    HMACSHA1_ALGORITHM);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public String create(String secret, String base, int digits) throws InvalidKeyException, NoSuchAlgorithmException {
+        return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET,
+                HMACSHA1_ALGORITHM);
     }
 
     /**
-     * This method uses the JCE to provide the crypto algorithm. HMAC computes a Hashed Message
-     * Authentication Code with the crypto hash algorithm as a parameter.
+     * Uses the JCE to provide the cryptographic hash. HMAC computes a Hashed Message
+     * Authentication Code with the hash algorithm as a parameter.
      * 
-     * @param crypto
-     *            the crypto algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
+     * @param alg
+     *            algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
      * @param keyBytes
      *            the bytes to use for the HMAC key
      * @param text
      *            the message or text to be authenticated
+     * @throws NoSuchAlgorithmException 
+     * @throws InvalidKeyException 
      */
-    private static byte[] hmac(String crypto, byte[] keyBytes, byte[] text) {
-        try {
-            Mac hmac = Mac.getInstance(crypto);
-            SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-            hmac.init(macKey);
-            return hmac.doFinal(text);
-        } catch (GeneralSecurityException gse) {
-            throw new UndeclaredThrowableException(gse);
-        }
+    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac hmac = Mac.getInstance(alg);
+        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
+        hmac.init(macKey);
+        return hmac.doFinal(text);
     }
 
     /**
@@ -90,7 +84,7 @@ public class HOTP implements OTPInterface {
      *            number of significant places in the number
      * @return the checksum of num
      */
-    private static int calcChecksum(long num, int digits) {
+    private static int checksum(long num, int digits) {
         boolean doubleDigit = true;
         int total = 0;
         while (0 < digits--) {
@@ -157,7 +151,7 @@ public class HOTP implements OTPInterface {
 
         int otp = binary % ((int) Math.pow(10, digits));
         if (addChecksum) {
-            otp = (otp * 10) + calcChecksum(otp, digits);
+            otp = (otp * 10) + checksum(otp, digits);
         }
         String result = Integer.toString(otp);
         int digit = addChecksum ? (digits + 1) : digits;

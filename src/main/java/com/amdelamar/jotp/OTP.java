@@ -2,6 +2,8 @@ package com.amdelamar.jotp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import com.amdelamar.jotp.type.HOTP;
@@ -67,8 +69,7 @@ public final class OTP {
      * A quick method to get Unix Time rounded down to the nearest 30 seconds.
      * 
      * @return String Hex time
-     * @throws IOException
-     *             Error when generating Unix time.
+     * @throws IOException when generating Unix time
      */
     public static String timeInHex() throws IOException {
         return timeInHex(System.currentTimeMillis());
@@ -78,8 +79,7 @@ public final class OTP {
      * A quick method to get a Time rounded down to the nearest 30 seconds.
      * @param timeInMillis long (like <code>System.currentTimeMillis()</code>)
      * @return String Hex time
-     * @throws IOException
-     *             Error when generating Unix time.
+     * @throws IOException when generating Unix time
      */
     public static String timeInHex(long timeInMillis) throws IOException {
         long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30L);
@@ -102,12 +102,14 @@ public final class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return code
-     * @throws IllegalArgumentException
-     *             Error when Type is not recognized.
+     * @throws IllegalArgumentException when parameters are invalid
+     * @throws NoSuchAlgorithmException when HMAC is not available on this jvm
+     * @throws InvalidKeyException when secret is invalid
      * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
      * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
-    public static String create(String secret, String base, int digits, Type type) throws IllegalArgumentException {
+    public static String create(String secret, String base, int digits, Type type)
+            throws IllegalArgumentException, InvalidKeyException, NoSuchAlgorithmException {
 
         // validate
         validateParameters(secret, base, digits, type);
@@ -142,13 +144,14 @@ public final class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return true if valid
-     * @throws IllegalArgumentException
-     *             Error when parameters invalid.
+     * @throws IllegalArgumentException when parameters are invalid
+     * @throws NoSuchAlgorithmException when HMAC is not available on this jvm
+     * @throws InvalidKeyException when secret is invalid
      * @see <a href="https://tools.ietf.org/html/rfc4226">https://tools.ietf.org/html/rfc4226</a>
      * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
     public static boolean verify(String secret, String base, String code, int digits, Type type)
-            throws IllegalArgumentException {
+            throws IllegalArgumentException, InvalidKeyException, NoSuchAlgorithmException {
 
         // validate
         validateParameters(secret, base, digits, type);
@@ -190,8 +193,7 @@ public final class OTP {
      * @param type
      *            Type.TOTP or Type.HOTP
      * @return true if parameters are valid
-     * @throws IllegalArgumentException
-     *             Error when parameters invalid.
+     * @throws IllegalArgumentException when parameters are invalid
      */
     private static boolean validateParameters(String secret, String base, int digits, Type type)
             throws IllegalArgumentException {
@@ -224,8 +226,7 @@ public final class OTP {
      * @param email
      *            Username or Email address
      * @return otpauth://...
-     * @throws IllegalArgumentException 
-     *             Error when parameters invalid.
+     * @throws IllegalArgumentException when parameters are invalid
      */
     public static String getURL(String secret, int digits, Type type, String issuer, String email)
             throws IllegalArgumentException {

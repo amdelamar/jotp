@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,7 +109,7 @@ public class OTPTests {
     }
 
     @Test
-    public void totpTests() throws IllegalArgumentException, IOException, InterruptedException {
+    public void totpTests() throws IllegalArgumentException, IOException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException {
 
         // run 5 tests
         for (int i = 0; i < 5; i++) {
@@ -126,7 +128,7 @@ public class OTPTests {
     }
 
     @Test
-    public void hotpTests() throws IllegalArgumentException {
+    public void hotpTests() throws IllegalArgumentException, InvalidKeyException, NoSuchAlgorithmException {
 
         // run 5 tests
         for (int i = 0; i < 5; i++) {

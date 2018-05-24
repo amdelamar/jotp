@@ -1,8 +1,8 @@
 package com.amdelamar.jotp.type;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
-import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -37,9 +37,11 @@ public class TOTP implements OTPInterface {
      * @param digits
      *            The length of the code (Commonly '6')
      * @return code
+     * @throws NoSuchAlgorithmException when HMAC is not available on this jvm
+     * @throws InvalidKeyException when secret is invalid
      * @see <a href="https://tools.ietf.org/html/rfc6238">https://tools.ietf.org/html/rfc6238</a>
      */
-    public String create(String secret, String base, int digits) {
+    public String create(String secret, String base, int digits) throws InvalidKeyException, NoSuchAlgorithmException {
         return generateTotp(secret, base, digits, HMACSHA1_ALGORITHM);
     }
 
@@ -53,16 +55,15 @@ public class TOTP implements OTPInterface {
      *            the bytes to use for the HMAC key
      * @param text
      *            the message or text to be authenticated
+     * @throws NoSuchAlgorithmException 
+     * @throws InvalidKeyException 
      */
-    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text) {
-        try {
-            Mac hmac = Mac.getInstance(alg);
-            SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-            hmac.init(macKey);
-            return hmac.doFinal(text);
-        } catch (GeneralSecurityException e) {
-            throw new UndeclaredThrowableException(e);
-        }
+    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac hmac = Mac.getInstance(alg);
+        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
+        hmac.init(macKey);
+        return hmac.doFinal(text);
     }
 
     /**
@@ -97,8 +98,11 @@ public class TOTP implements OTPInterface {
      * @param crypto
      *            the crypto function to use
      * @return numeric String in base 10 that includes digits
+     * @throws NoSuchAlgorithmException 
+     * @throws InvalidKeyException 
      */
-    private static String generateTotp(String key, String time, int digits, String crypto) {
+    private static String generateTotp(String key, String time, int digits, String crypto)
+            throws InvalidKeyException, NoSuchAlgorithmException {
         // Using the counter
         // First 8 bytes are for the movingFactor
         // Compliant with base RFC 4226 (HOTP)
@@ -115,8 +119,8 @@ public class TOTP implements OTPInterface {
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;
 
-        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16) | ((hash[offset + 2] & 0xff) << 8)
-                | (hash[offset + 3] & 0xff);
+        int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
+                | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
 
         int otp = binary % ((int) Math.pow(10, digits));
 

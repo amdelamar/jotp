@@ -1,5 +1,8 @@
 package com.amdelamar.jotp.type;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * OTP (One Time Password) generator interface
  * 
@@ -10,6 +13,6 @@ public interface OTPInterface {
 
     public abstract String getLabel();
 
-    public abstract String create(String key, String base, int digits);
+    public abstract String create(String key, String base, int digits) throws InvalidKeyException, NoSuchAlgorithmException;
 
 }
