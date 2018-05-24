@@ -36,12 +36,10 @@ public final class OTP {
      * @return secure random string
      */
     public static String random(String characters, int length) {
-        if (length < 1) {
-            length = BYTES;
-        }
+        int len = length < 1 ? BYTES : length;
         SecureRandom random = new SecureRandom();
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) {
+        char[] text = new char[len];
+        for (int i = 0; i < len; i++) {
             text[i] = characters.charAt(random.nextInt(characters.length()));
         }
         return new String(text);
@@ -55,10 +53,8 @@ public final class OTP {
      * @return secure random string
      */
     public static String randomBase32(int length) {
-        if (length < 1) {
-            length = BYTES;
-        }
-        byte[] bytes = new byte[length];
+        int len = length < 1 ? BYTES : length;
+        byte[] bytes = new byte[len];
         SecureRandom random = new SecureRandom();
         random.nextBytes(bytes);
 

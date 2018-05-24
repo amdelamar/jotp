@@ -87,7 +87,7 @@ public class HOTP implements OTPInterface {
     private static int checksum(long num, int digits) {
         boolean doubleDigit = true;
         int total = 0;
-        while (0 < digits--) {
+        for (int i=digits; 0 < i; i--) {
             int digit = (int) (num % 10);
             num /= 10;
             if (doubleDigit) {
