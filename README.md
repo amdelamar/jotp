@@ -3,8 +3,6 @@
 [![Build](https://img.shields.io/travis/amdelamar/jotp.svg)](https://travis-ci.org/amdelamar/jotp)
 [![Codacy](https://img.shields.io/codacy/grade/d81a548aa6274895a2b08aac2400d8da.svg)](https://www.codacy.com/app/amdelamar/jotp)
 [![Codecov](https://img.shields.io/codecov/c/github/amdelamar/jotp.svg)](https://codecov.io/gh/amdelamar/jotp)
-[![License](https://img.shields.io/:license-apache-blue.svg)](https://github.com/amdelamar/jotp/blob/master/LICENSE)
-[![Release](https://img.shields.io/github/tag/amdelamar/jotp.svg?label=JitPack)](https://jitpack.io/#amdelamar/jotp)
 
 OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using [HMAC-based](https://tools.ietf.org/html/rfc4226)) or [Time-based](https://tools.ietf.org/html/rfc6238) algorithms.
 
