@@ -15,15 +15,15 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 ```xml
 <repositories>
     <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+        <id>jcenter</id>
+        <url>https://jcenter.bintray.com/</url>
     </repository>
 </repositories>
 ...
 <dependency>
-    <groupId>com.github.amdelamar</groupId>
+    <groupId>com.amdelamar</groupId>
     <artifactId>jotp</artifactId>
-    <version>v1.1.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -31,16 +31,15 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 ```gradle
 repositories {
-    ...
-    maven { url 'https://jitpack.io' }
+    jcenter()
 }
-...
+
 dependencies {
-    compile 'com.github.amdelamar:jotp:v1.1.0'
+    compile 'com.amdelamar:jotp:1.1.0'
 }
 ```
 
-* or Download the [latest release](https://github.com/amdelamar/jotp/releases).
+* or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/bintray/jcenter/jotp).
 
 
 ## Usage
