@@ -61,7 +61,7 @@ publishing {
   publications {
     MyPublication(MavenPublication) {
       from components.java
-      artifact (sourcesJar) { 
+      artifact (sourcesJar) {
         classifier = "sources"
       }
       artifact (javadocJar) {
@@ -82,7 +82,7 @@ bintray {
     name = 'jotp'
     desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
     licenses = ['Apache-2.0']
-    websiteUrl = 'https://austindelamar.com/jotp/'
+    websiteUrl = 'https://amdelamar.com/jotp/'
     issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
     vcsUrl = 'git://github.com/amdelamar/jotp.git'
     githubRepo = 'amdelamar/jotp' // Optional Github repository
