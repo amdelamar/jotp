@@ -63,6 +63,14 @@ public class HOTPTest {
         assertEquals(16, code1.length());
         assertTrue(code1.startsWith("0"));
     }
+    
+    @Test
+    public void truncationOffset() throws InvalidKeyException, IllegalArgumentException, NoSuchAlgorithmException {
+        String secret = OTP.randomBase32(OTP.BYTES);
+        String code1 = HOTP.generateHotp(secret.getBytes(), 1l, 6, false, -1, "HmacSHA1");
+
+        assertTrue(code1.length() == 6);
+    }
 
     @Test
     public void checksum() throws InvalidKeyException, NoSuchAlgorithmException {
