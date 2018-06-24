@@ -4,47 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.amdelamar.jotp.type.HOTP;
-import com.amdelamar.jotp.type.TOTP;
 import com.amdelamar.jotp.type.Type;
 
 /**
  * Unit tests for Jotp
- * 
- * @author amdelamar
- * @since 1.0.0
  */
 @RunWith(JUnit4.class)
-public class OTPTests {
-
-    @Test
-    public void constructorTests() {
-        HOTP hotp = new HOTP();
-        assertNotNull(hotp);
-
-        TOTP totp = new TOTP();
-        assertNotNull(totp);
-    }
-
-    @Test
-    public void labelTests() {
-        HOTP hotp = new HOTP();
-        assertEquals("hotp", hotp.getLabel());
-
-        TOTP totp = new TOTP();
-        assertEquals("totp", totp.getLabel());
-    }
+public class OTPTest {
 
     @Test
     public void randomTests() {
@@ -106,46 +80,6 @@ public class OTPTests {
 
         url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 4, Type.TOTP, "Example4", "test4@example.com");
         assertNotNull(url);
-    }
-
-    @Test
-    public void totpTests() throws IllegalArgumentException, IOException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException {
-
-        // run 5 tests
-        for (int i = 0; i < 5; i++) {
-            String secret = OTP.randomBase32(OTP.BYTES);
-            String code1 = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);
-
-            // 30 sec window, so wait just a second
-            // If its beyond 30sec since the first OTP,
-            // then we will get a different base value.
-            Thread.sleep(500);
-
-            String code2 = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);
-            assertEquals(code1, code2);
-            assertTrue(OTP.verify(secret, OTP.timeInHex(), code2, 6, Type.TOTP));
-        }
-    }
-
-    @Test
-    public void hotpTests() throws IllegalArgumentException, InvalidKeyException, NoSuchAlgorithmException {
-
-        // run 5 tests
-        for (int i = 0; i < 5; i++) {
-            String secret = OTP.randomBase32(OTP.BYTES);
-            String code1 = OTP.create(secret, "1", 6, Type.HOTP);
-
-            // Using same counter should get the same code
-            String code2 = OTP.create(secret, "1", 6, Type.HOTP);
-            assertEquals(code1, code2);
-            assertTrue(OTP.verify(secret, "1", code2, 6, Type.HOTP));
-
-            // Indefinite window of opportunity here.
-            // Next generated code SHOULD be different than the previous.
-
-            String code3 = OTP.create(secret, "2", 6, Type.HOTP);
-            assertNotEquals(code1, code3);
-        }
     }
 
     @Test
