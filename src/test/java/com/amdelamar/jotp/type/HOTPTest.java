@@ -71,5 +71,11 @@ public class HOTPTest {
         
         // added checksum +1 to digit length
         assertTrue(code1.length() == 6 + 1);
+        
+        int a = HOTP.checksum(10000l, 4);
+        assertEquals(0, a);
+        
+        int b = HOTP.checksum(10000l, 6);
+        assertEquals(8, b);
     }
 }

@@ -121,7 +121,7 @@ public class HOTP implements OTPInterface {
 
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;
-        if ((0 <= truncationOffset) && (truncationOffset < (hash.length - 4))) {
+        if ((-1 < truncationOffset) && (truncationOffset < (hash.length - 4))) {
             offset = truncationOffset;
         }
         int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
