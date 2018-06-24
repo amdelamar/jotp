@@ -67,9 +67,14 @@ public class HOTPTest {
     @Test
     public void truncationOffset() throws InvalidKeyException, IllegalArgumentException, NoSuchAlgorithmException {
         String secret = OTP.randomBase32(OTP.BYTES);
+        
+        // too small
         String code1 = HOTP.generateHotp(secret.getBytes(), 1l, 6, false, -1, "HmacSHA1");
-
         assertTrue(code1.length() == 6);
+        
+        // too big
+        String code2 = HOTP.generateHotp(secret.getBytes(), 1l, 6, false, 16, "HmacSHA1");
+        assertTrue(code2.length() == 6);
     }
 
     @Test
