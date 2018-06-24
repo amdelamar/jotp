@@ -52,22 +52,24 @@ public class HOTPTest {
             assertNotEquals(code1, code3);
         }
     }
-    
+
     @Test
     public void padLeft() throws InvalidKeyException, IllegalArgumentException, NoSuchAlgorithmException {
         String secret = OTP.randomBase32(OTP.BYTES);
         String code1 = OTP.create(secret, "1", 16, Type.HOTP);
-        
+
         // code padded with 00's until it meets length desired
         // e.g. 0000001868692305
         assertEquals(16, code1.length());
         assertTrue(code1.startsWith("0"));
     }
-    
+
     @Test
-    public void checksum() {
-        HOTP hotp = new HOTP();
+    public void checksum() throws InvalidKeyException, NoSuchAlgorithmException {
+        String secret = OTP.randomBase32(OTP.BYTES);
+        String code1 = HOTP.generateHotp(secret.getBytes(), 1l, 6, true, 0, "HmacSHA1");
         
-        //hotp.checksum()
+        // added checksum +1 to digit length
+        assertTrue(code1.length() == 6 + 1);
     }
 }
