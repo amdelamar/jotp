@@ -3,8 +3,7 @@ package com.amdelamar.jotp.type;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import com.amdelamar.jotp.util.Utils;
 
 /**
  * Hmac based OTP class implements OTPInterface
@@ -51,27 +50,6 @@ public class HOTP implements OTPInterface {
     public String create(String secret, String base, int digits) throws InvalidKeyException, NoSuchAlgorithmException {
         return generateHotp(secret.getBytes(), Long.parseLong(base), digits, CHECKSUM, TRUNCATE_OFFSET,
                 HMACSHA1_ALGORITHM);
-    }
-
-    /**
-     * Uses the JCE to provide the cryptographic hash. HMAC computes a Hashed Message
-     * Authentication Code with the hash algorithm as a parameter.
-     * 
-     * @param alg
-     *            algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
-     * @param keyBytes
-     *            the bytes to use for the HMAC key
-     * @param text
-     *            the message or text to be authenticated
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeyException 
-     */
-    protected static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
-            throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac hmac = Mac.getInstance(alg);
-        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-        hmac.init(macKey);
-        return hmac.doFinal(text);
     }
 
     /**
@@ -139,7 +117,7 @@ public class HOTP implements OTPInterface {
         }
 
         // compute hmac hash
-        byte[] hash = hmac(crypto, secret, text);
+        byte[] hash = Utils.hmac(crypto, secret, text);
 
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;

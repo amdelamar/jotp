@@ -4,8 +4,7 @@ import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import com.amdelamar.jotp.util.Utils;
 
 /**
  * Time based OTP class implements OTPInterface
@@ -43,27 +42,6 @@ public class TOTP implements OTPInterface {
      */
     public String create(String secret, String base, int digits) throws InvalidKeyException, NoSuchAlgorithmException {
         return generateTotp(secret, base, digits, HMACSHA1_ALGORITHM);
-    }
-
-    /**
-     * Uses the JCE to provide the cryptographic hash. HMAC computes a Hashed Message
-     * Authentication Code with the hash algorithm as a parameter.
-     * 
-     * @param alg
-     *            algorithm (HmacSHA1, HmacSHA256, HmacSHA512)
-     * @param keyBytes
-     *            the bytes to use for the HMAC key
-     * @param text
-     *            the message or text to be authenticated
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeyException 
-     */
-    protected static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
-            throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac hmac = Mac.getInstance(alg);
-        SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
-        hmac.init(macKey);
-        return hmac.doFinal(text);
     }
 
     /**
@@ -114,7 +92,7 @@ public class TOTP implements OTPInterface {
         byte[] msg = hexStringToBytes(time);
         byte[] k = hexStringToBytes(key);
 
-        byte[] hash = hmac(crypto, k, msg);
+        byte[] hash = Utils.hmac(crypto, k, msg);
 
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;

@@ -68,6 +68,6 @@ public class HOTPTest {
     public void checksum() {
         HOTP hotp = new HOTP();
         
-        hotp.checksum()
+        //hotp.checksum()
     }
 }
