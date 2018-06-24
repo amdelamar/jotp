@@ -58,7 +58,7 @@ public class TOTP implements OTPInterface {
      * @throws NoSuchAlgorithmException 
      * @throws InvalidKeyException 
      */
-    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
+    protected static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
             throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmac = Mac.getInstance(alg);
         SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
@@ -73,7 +73,7 @@ public class TOTP implements OTPInterface {
      *            the HEX string
      * @return byte array
      */
-    private static byte[] hexStringToBytes(String hex) {
+    protected static byte[] hexStringToBytes(String hex) {
         // Adding one byte to get the right conversion
         // Values starting with "0" can be converted
         byte[] bArray = new BigInteger("10" + hex, 16).toByteArray();
@@ -101,7 +101,7 @@ public class TOTP implements OTPInterface {
      * @throws NoSuchAlgorithmException 
      * @throws InvalidKeyException 
      */
-    private static String generateTotp(String key, String time, int digits, String crypto)
+    protected static String generateTotp(String key, String time, int digits, String crypto)
             throws InvalidKeyException, NoSuchAlgorithmException {
         // Using the counter
         // First 8 bytes are for the movingFactor

@@ -66,7 +66,7 @@ public class HOTP implements OTPInterface {
      * @throws NoSuchAlgorithmException 
      * @throws InvalidKeyException 
      */
-    private static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
+    protected static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
             throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmac = Mac.getInstance(alg);
         SecretKeySpec macKey = new SecretKeySpec(keyBytes, "RAW");
@@ -84,7 +84,7 @@ public class HOTP implements OTPInterface {
      *            number of significant places in the number
      * @return the checksum of num
      */
-    private static int checksum(long num, int digits) {
+    protected static int checksum(long num, int digits) {
         boolean doubleDigit = true;
         int total = 0;
         for (int i=digits; 0 < i; i--) {
@@ -125,7 +125,7 @@ public class HOTP implements OTPInterface {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    private static String generateHotp(byte[] secret,
+    protected static String generateHotp(byte[] secret,
             long movingFactor,
             int digits,
             boolean addChecksum,

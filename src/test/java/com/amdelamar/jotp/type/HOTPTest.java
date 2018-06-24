@@ -63,4 +63,11 @@ public class HOTPTest {
         assertEquals(16, code1.length());
         assertTrue(code1.startsWith("0"));
     }
+    
+    @Test
+    public void checksum() {
+        HOTP hotp = new HOTP();
+        
+        hotp.checksum()
+    }
 }

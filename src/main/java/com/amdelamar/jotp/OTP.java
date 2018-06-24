@@ -191,7 +191,7 @@ public final class OTP {
      * @return true if parameters are valid
      * @throws IllegalArgumentException when parameters are invalid
      */
-    private static boolean validateParameters(String secret, String base, int digits, Type type)
+    protected static boolean validateParameters(String secret, String base, int digits, Type type)
             throws IllegalArgumentException {
         if (secret == null || secret.isEmpty()) {
             throw new IllegalArgumentException("Secret cannot be null or empty.");
