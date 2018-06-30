@@ -22,8 +22,9 @@ public final class Utils {
      *            the bytes to use for the HMAC key
      * @param text
      *            the message or text to be authenticated
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeyException 
+     * @return hash byte array
+     * @throws NoSuchAlgorithmException if hmac sha1 is not available
+     * @throws InvalidKeyException if given key  is inappropriate for this mac
      */
     public static byte[] hmac(String alg, byte[] keyBytes, byte[] text)
             throws NoSuchAlgorithmException, InvalidKeyException {

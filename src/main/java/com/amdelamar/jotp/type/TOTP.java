@@ -71,13 +71,13 @@ public class TOTP implements OTPInterface {
      *            the shared secret, HEX encoded
      * @param time
      *            a value that reflects a time
-     * @param returnDigits
+     * @param digits
      *            number of digits to return
      * @param crypto
      *            the crypto function to use
      * @return numeric String in base 10 that includes digits
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeyException 
+     * @throws NoSuchAlgorithmException if hmac sha1 is not available
+     * @throws InvalidKeyException if given key  is inappropriate for this mac
      */
     protected static String generateTotp(String key, String time, int digits, String crypto)
             throws InvalidKeyException, NoSuchAlgorithmException {

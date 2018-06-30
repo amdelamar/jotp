@@ -100,8 +100,8 @@ public class HOTP implements OTPInterface {
      * @param crypto
      *            the crypto function to use
      * @return An OTP code.
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException if hmac sha1 is not available
+     * @throws InvalidKeyException if given key  is inappropriate for this mac
      */
     protected static String generateHotp(byte[] secret,
             long movingFactor,
