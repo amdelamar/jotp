@@ -10,7 +10,7 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 
 ## Getting Started
 
-* Maven:
+Maven:
 
 ```xml
 <repositories>
@@ -19,15 +19,15 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
         <url>https://jcenter.bintray.com/</url>
     </repository>
 </repositories>
-...
+
 <dependency>
     <groupId>com.amdelamar</groupId>
     <artifactId>jotp</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
-* Gradle:
+Gradle:
 
 ```gradle
 repositories {
@@ -35,16 +35,19 @@ repositories {
 }
 
 dependencies {
-    compile 'com.amdelamar:jotp:1.1.0'
+    compile 'com.amdelamar:jotp:1.2.0'
 }
 ```
 
-* or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/bintray/jcenter/jotp).
+Or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/bintray/jcenter/jotp).
 
 
 ## Usage
 
 ```java
+import com.amdelamar.jotp.OTP;
+import com.amdelamar.jotp.type.Type;
+
 // Random secret Base32 with 20 bytes (160 bits) length
 // (Use this to setup 2FA for new accounts).
 String secret = OTP.randomBase32(20);

@@ -59,7 +59,7 @@
             <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/"><span class="icon-github" style="font-size:1.5em;margin-right:5px"></span>View on GitHub</a>
             <a class="button" target="_blank" href="https://github.com/amdelamar/jotp/issues"><span class="icon-bug" style="font-size:1.5em;margin-right:5px"></span>Report Issue</a>
             </p>
-            <code>v1.1.0</code> - 17 Jun 2017 - <code>17KB</code>
+            <code>v1.2.0</code> - 30 Jun 2018 - <code>16KB</code>
         </div>
         <div class="twelve columns">
             <hr />
@@ -76,28 +76,31 @@
         &lt;url&gt;https://jcenter.bintray.com/&lt;/url&gt;
     &lt;/repository&gt;
 &lt;/repositories&gt;
-...
+
 &lt;dependency&gt;
     &lt;groupId&gt;com.amdelamar&lt;/groupId&gt;
     &lt;artifactId&gt;jotp&lt;/artifactId&gt;
-    &lt;version&gt;1.1.0&lt;/version&gt;
+    &lt;version&gt;1.2.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
             <p>Gradle:</p>
-            <pre><code class="yaml">repositories {
-    ...
+            <pre><code class="groovy">repositories {
     jcenter()
 }
-...
+
 dependencies {
-    compile 'com.amdelamar:jotp:1.1.0'
+    compile 'com.amdelamar:jotp:1.2.0'
 }
 </code></pre>
 
+      <p>Or Download the <a href="https://github.com/amdelamar/jotp/releases">latest release</a>. Published on <a href="https://bintray.com/bintray/jcenter/jotp">JCenter</a>.</p>
 
 			<h3>Usage</h3>
 
-            <pre><code class="java">// Random secret Base32 with 20 bytes (160 bits) length
+            <pre><code class="java">import com.amdelamar.jotp.OTP;
+import com.amdelamar.jotp.type.Type;
+
+// Random secret Base32 with 20 bytes (160 bits) length
 // (Use this to setup 2FA for new accounts).
 String secret = OTP.randomBase32(20);
 // Returns: IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ
