@@ -4,13 +4,13 @@ plugins {
   id 'jacoco'
   id 'maven'
   id 'maven-publish'
-  id 'com.jfrog.bintray' version '1.8.0'
+  id 'com.jfrog.bintray' version '1.8.4'
   id 'org.sonarqube' version '2.6.2'
 }
 
 group = 'com.amdelamar'
 version = '1.2.0'
-description = 'OTP (One Time Password) utility in Java'
+description = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
@@ -67,6 +67,9 @@ publishing {
       artifact (javadocJar) {
         classifier = "javadoc"
       }
+      version this.version
+      groupId this.group
+      artifactId 'jotp'
     }
   }
 }
@@ -80,11 +83,16 @@ bintray {
   pkg {
     repo = 'mvn'
     name = 'jotp'
-    desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
+    desc = this.description
     licenses = ['Apache-2.0']
     websiteUrl = 'https://amdelamar.com/jotp/'
     issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
     vcsUrl = 'git://github.com/amdelamar/jotp.git'
+    version {
+        name = '1.2.0'
+        desc = this.description
+        released  = new Date()
+    }
     githubRepo = 'amdelamar/jotp' // Optional Github repository
     githubReleaseNotesFile = 'README.md' // Optional Github release notes
     labels = ['otp', '2fa', 'totp', 'hotp']
