@@ -89,7 +89,7 @@ bintray {
     issueTrackerUrl = 'https://github.com/amdelamar/jotp/issues'
     vcsUrl = 'git://github.com/amdelamar/jotp.git'
     version {
-        name = '1.2.0'
+        name = this.version
         desc = this.description
         released  = new Date()
     }
