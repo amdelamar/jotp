@@ -78,7 +78,7 @@ bintray {
   publish = true
   override = true
   pkg {
-    repo = 'maven'
+    repo = 'mvn'
     name = 'jotp'
     desc = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
     licenses = ['Apache-2.0']
