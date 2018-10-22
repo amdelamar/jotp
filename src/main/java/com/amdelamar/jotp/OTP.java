@@ -13,7 +13,7 @@ import com.amdelamar.jotp.type.Type;
 /**
  * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using
  * HMAC-based) or Time-based algorithms.
- * 
+ *
  * @author amdelamar
  * @see <a href="https://github.com/amdelamar/jotp">https://github.com/amdelamar/jotp</a>
  * @since 1.0.0
@@ -28,7 +28,7 @@ public final class OTP {
 
     /**
      * Generate a random string using the characters provided, with the specified length.
-     * 
+     *
      * @param characters
      *            A set of possible characters to be chosen.
      * @param length
@@ -47,7 +47,7 @@ public final class OTP {
 
     /**
      * Generate a random string in Base32, with the specified length.
-     * 
+     *
      * @param length
      *            default 20
      * @return secure random string
@@ -63,7 +63,7 @@ public final class OTP {
 
     /**
      * A quick method to get Unix Time rounded down to the nearest 30 seconds.
-     * 
+     *
      * @return String Hex time
      * @throws IOException when generating Unix time
      */
@@ -78,7 +78,7 @@ public final class OTP {
      * @throws IOException when generating Unix time
      */
     public static String timeInHex(long timeInMillis) throws IOException {
-        long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30L);
+        long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30d);
         byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();
@@ -87,7 +87,7 @@ public final class OTP {
 
     /**
      * Create a one-time-password with the given key, base, digits, and OTP.Type.
-     * 
+     *
      * @param secret
      *            The secret.
      * @param base
@@ -125,10 +125,10 @@ public final class OTP {
 
     /**
      * Returns true if the code is valid for the Hmac-based or Time-based OTP of the secret.
-     * 
+     *
      * For Hmac-based the 'base' is a counter, like 1,2,3. For Time-based the 'base' is Unix-time
      * rounded down to the nearest 30 seconds via "getTimeInHex()"
-     * 
+     *
      * @param secret
      *            Shhhhh. (Base32)
      * @param base
@@ -179,7 +179,7 @@ public final class OTP {
 
     /**
      * Validate the parameters used for generating one-time passwords.
-     * 
+     *
      * @param secret
      *            Shhhhh. (Base32)
      * @param base
@@ -210,7 +210,7 @@ public final class OTP {
 
     /**
      * Gets the "otpauth://" URL for adding to 2FA compatible devices/apps.
-     * 
+     *
      * @param secret
      *            Shhhhh. (Base32)
      * @param digits
