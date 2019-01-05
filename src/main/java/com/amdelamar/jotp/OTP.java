@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import com.amdelamar.jotp.type.HOTP;
 import com.amdelamar.jotp.type.TOTP;
 import com.amdelamar.jotp.type.Type;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using
@@ -82,7 +83,7 @@ public final class OTP {
         byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();
-        return org.apache.commons.codec.binary.Hex.encodeHexString(longBytes);
+        return new String(Hex.encodeHex(longBytes));
     }
 
     /**
@@ -112,7 +113,7 @@ public final class OTP {
 
         // convert Base32 secret to Hex
         byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
-        String key = org.apache.commons.codec.binary.Hex.encodeHexString(bytes);
+        String key = new String(Hex.encodeHex(bytes));
 
         if (type == Type.HOTP) {
             HOTP hotp = new HOTP();
@@ -161,7 +162,7 @@ public final class OTP {
 
         // convert Base32 secret to Hex
         byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
-        String key = org.apache.commons.codec.binary.Hex.encodeHexString(bytes);
+        String key = new String(Hex.encodeHex(bytes));
 
         // generate code to compare
         String ncode = null;
