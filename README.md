@@ -8,7 +8,7 @@
 OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using [HMAC-based](https://tools.ietf.org/html/rfc4226) or [Time-based](https://tools.ietf.org/html/rfc6238) algorithms.
 
 
-## Getting Started
+## Download
 
 Maven:
 
@@ -39,7 +39,7 @@ dependencies {
 }
 ```
 
-Or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/bintray/jcenter/jotp).
+Or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/amdelamar/mvn/jotp).
 
 
 ## Usage
