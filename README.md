@@ -1,6 +1,6 @@
 # Jotp
 
-[![Build](https://img.shields.io/travis/amdelamar/jotp.svg)](https://travis-ci.org/amdelamar/jotp)
+[![Build](https://img.shields.io/drone/build/amdelamar/jotp.svg)](https://cloud.drone.io/amdelamar/jotp)
 [![Codacy](https://img.shields.io/codacy/grade/d81a548aa6274895a2b08aac2400d8da.svg)](https://www.codacy.com/app/amdelamar/jotp)
 [![Codecov](https://img.shields.io/codecov/c/github/amdelamar/jotp.svg)](https://codecov.io/gh/amdelamar/jotp)
 [![Known Vulnerabilities](https://snyk.io/test/github/amdelamar/jotp/badge.svg)](https://snyk.io/test/github/amdelamar/jotp)
