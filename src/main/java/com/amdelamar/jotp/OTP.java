@@ -111,8 +111,11 @@ public final class OTP {
         // validate
         validateParameters(secret, base, digits, type);
 
+        // Base32 Secret should be UPPERCASED
+        String uppercaseSecret = secret.toUpperCase();
+
         // convert Base32 secret to Hex
-        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
+        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
         String key = new String(Hex.encodeHex(bytes));
 
         if (type == Type.HOTP) {
@@ -152,6 +155,10 @@ public final class OTP {
 
         // validate
         validateParameters(secret, base, digits, type);
+
+        // Base32 Secret should be UPPERCASED
+        String uppercaseSecret = secret.toUpperCase();
+
         if (code == null || code.isEmpty()) {
             throw new IllegalArgumentException("Code cannot be null or empty.");
         }
@@ -161,7 +168,7 @@ public final class OTP {
         }
 
         // convert Base32 secret to Hex
-        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(secret);
+        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
         String key = new String(Hex.encodeHex(bytes));
 
         // generate code to compare

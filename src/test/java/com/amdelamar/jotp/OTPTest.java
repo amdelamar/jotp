@@ -112,6 +112,20 @@ public class OTPTest {
     }
 
     @Test
+    public void uppercaseSecretTests() {
+        try {
+            String time = OTP.timeInHex();
+            String t1 = OTP.create("MFRGGZDFMZTWQ2LK", time, 6, Type.TOTP);
+            String t2 = OTP.create("mfrggzdfmztwq2lk", time, 6, Type.TOTP);
+            assertEquals(t1, t2);
+        } catch (Exception e) {
+            // bad exception
+            fail("uppercase secret caused a problem");
+        }
+
+    }
+
+    @Test
     public void badBaseTests() {
         try {
             // bad base
