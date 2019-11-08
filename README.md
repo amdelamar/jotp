@@ -55,7 +55,8 @@ String secret = OTP.randomBase32(20);
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String code = OTP.create(secret, OTP.timeInHex(), 6, Type.TOTP);
+String hexTime = OTP.timeInHex(System.currentTimeMillis());
+String code = OTP.create(secret, hexTime, 6, Type.TOTP);
 ```
 
 Show the user the QR Code <sup>1</sup>
