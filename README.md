@@ -39,6 +39,18 @@ dependencies {
 }
 ```
 
+SBT:
+
+```scala
+resolvers += {
+  Resolver.jcenterRepo
+}
+
+libraryDependencies ++= Seq(
+  "com.amdelamar" % "jotp" % "1.2.0"
+)
+```
+
 Or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/amdelamar/mvn/jotp).
 
 
