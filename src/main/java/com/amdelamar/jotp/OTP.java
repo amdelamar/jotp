@@ -36,6 +36,7 @@ public final class OTP {
      *            default 20
      * @return secure random string
      */
+    @Deprecated
     public static String random(String characters, int length) {
         int len = length < 1 ? BYTES : length;
         SecureRandom random = new SecureRandom();
@@ -68,6 +69,7 @@ public final class OTP {
      * @return String Hex time
      * @throws IOException when generating Unix time
      */
+    @Deprecated
     public static String timeInHex() throws IOException {
         return timeInHex(System.currentTimeMillis());
     }
@@ -131,7 +133,7 @@ public final class OTP {
      * Returns true if the code is valid for the Hmac-based or Time-based OTP of the secret.
      *
      * For Hmac-based the 'base' is a counter, like 1,2,3. For Time-based the 'base' is Unix-time
-     * rounded down to the nearest 30 seconds via "getTimeInHex()"
+     * rounded down to the nearest 30 seconds.
      *
      * @param secret
      *            Shhhhh. (Base32)

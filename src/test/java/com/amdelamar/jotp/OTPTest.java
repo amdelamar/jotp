@@ -24,24 +24,17 @@ public class OTPTest {
     public void randomTests() {
 
         assertNotNull(OTP.randomBase32(0));
-        assertNotNull(OTP.random("123", 0));
 
         String r1 = OTP.randomBase32(20);
         String r2 = OTP.randomBase32(20);
         assertNotEquals(r1, r2);
-
-        assertNotNull(OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12));
-
-        String r3 = OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12);
-        String r4 = OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12);
-        assertNotEquals(r3, r4);
     }
 
     @Test
     public void timeTests() throws IllegalArgumentException, IOException, InterruptedException {
 
-        String t1 = OTP.timeInHex();
-        String t2 = OTP.timeInHex();
+        String t1 = OTP.timeInHex(System.currentTimeMillis());
+        String t2 = OTP.timeInHex(System.currentTimeMillis());
 
         // wait a half second
         Thread.sleep(500);
@@ -54,12 +47,6 @@ public class OTPTest {
 
     @Test
     public void encodeTests() {
-
-        // run 5 tests
-        for (int i = 0; i < 5; i++) {
-            assertNotNull(OTP.random("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 12));
-        }
-
         // run 5 tests
         for (int i = 0; i < 5; i++) {
             assertNotNull(OTP.randomBase32(OTP.BYTES));
@@ -86,7 +73,7 @@ public class OTPTest {
     public void badSecretTests() {
         try {
             // bad secret
-            OTP.create(null, OTP.timeInHex(), 6, Type.TOTP);
+            OTP.create(null, OTP.timeInHex(System.currentTimeMillis()), 6, Type.TOTP);
             fail("null secret not detected");
         } catch (Exception e) {
             // good catch
@@ -94,7 +81,7 @@ public class OTPTest {
 
         try {
             // empty secret
-            OTP.create("", OTP.timeInHex(), 6, Type.TOTP);
+            OTP.create("", OTP.timeInHex(System.currentTimeMillis()), 6, Type.TOTP);
             fail("empty secret not detected");
         } catch (Exception e) {
             // good catch
@@ -102,7 +89,7 @@ public class OTPTest {
 
         try {
             // short secret
-            OTP.create("123", OTP.timeInHex()
+            OTP.create("123", OTP.timeInHex(System.currentTimeMillis())
                     .substring(3), 6, Type.TOTP);
             // should be ok
         } catch (Exception e) {
@@ -114,7 +101,7 @@ public class OTPTest {
     @Test
     public void uppercaseSecretTests() {
         try {
-            String time = OTP.timeInHex();
+            String time = OTP.timeInHex(System.currentTimeMillis());
             String t1 = OTP.create("MFRGGZDFMZTWQ2LK", time, 6, Type.TOTP);
             String t2 = OTP.create("mfrggzdfmztwq2lk", time, 6, Type.TOTP);
             assertEquals(t1, t2);
@@ -148,7 +135,7 @@ public class OTPTest {
     public void badDigitTests() {
         try {
             // bad digits
-            OTP.create("123", OTP.timeInHex(), 0, Type.TOTP);
+            OTP.create("123", OTP.timeInHex(System.currentTimeMillis()), 0, Type.TOTP);
             fail("zero digits not detected");
         } catch (Exception e) {
             // good catch
@@ -156,7 +143,7 @@ public class OTPTest {
 
         try {
             // bad type
-            OTP.create("123", OTP.timeInHex(), 6, null);
+            OTP.create("123", OTP.timeInHex(System.currentTimeMillis()), 6, null);
             fail("null type not detected");
         } catch (Exception e) {
             // good catch
@@ -167,7 +154,7 @@ public class OTPTest {
     public void badCodeTests() {
         try {
             // null verify code
-            OTP.verify("123", OTP.timeInHex(), null, 6, Type.TOTP);
+            OTP.verify("123", OTP.timeInHex(System.currentTimeMillis()), null, 6, Type.TOTP);
             fail("null code not detected");
         } catch (Exception e) {
             // good catch
@@ -175,7 +162,7 @@ public class OTPTest {
 
         try {
             // empty verify code
-            OTP.verify("123", OTP.timeInHex(), "", 6, Type.TOTP);
+            OTP.verify("123", OTP.timeInHex(System.currentTimeMillis()), "", 6, Type.TOTP);
             fail("empty code not detected");
         } catch (Exception e) {
             // good catch
@@ -183,7 +170,7 @@ public class OTPTest {
 
         try {
             // bad verify code length
-            boolean flag = OTP.verify("123", OTP.timeInHex(), "12345", 6, Type.TOTP);
+            boolean flag = OTP.verify("123", OTP.timeInHex(System.currentTimeMillis()), "12345", 6, Type.TOTP);
             assertFalse(flag);
         } catch (Exception e) {
             fail("bad code length not detected");
