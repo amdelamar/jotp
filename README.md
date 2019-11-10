@@ -23,7 +23,7 @@ Maven:
 <dependency>
     <groupId>com.amdelamar</groupId>
     <artifactId>jotp</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.amdelamar:jotp:1.2.0'
+    compile 'com.amdelamar:jotp:1.2.2'
 }
 ```
 
@@ -47,7 +47,7 @@ resolvers += {
 }
 
 libraryDependencies ++= Seq(
-  "com.amdelamar" % "jotp" % "1.2.0"
+  "com.amdelamar" % "jotp" % "1.2.2"
 )
 ```
 
