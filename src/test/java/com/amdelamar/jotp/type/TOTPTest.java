@@ -39,7 +39,6 @@ public class TOTPTest {
         // too early. So instead, we'll pick a specific point in
         // time to make this test repeatable.
         long time = 1573788090000L;
-        System.out.println("time = " + time);
         String secret = OTP.randomBase32(OTP.BYTES);
         String code1 = OTP.create(secret, OTP.timeInHex(time), 6, Type.TOTP);
 

@@ -22,7 +22,6 @@ public class OTPTest {
 
     @Test
     public void randomTests() {
-
         assertNotNull(OTP.randomBase32(0));
 
         String r1 = OTP.randomBase32(20);
@@ -32,7 +31,6 @@ public class OTPTest {
 
     @Test
     public void timeTests() throws IllegalArgumentException, IOException, InterruptedException {
-
         String t1 = OTP.timeInHex(System.currentTimeMillis());
         String t2 = OTP.timeInHex(System.currentTimeMillis());
 
@@ -47,26 +45,23 @@ public class OTPTest {
 
     @Test
     public void encodeTests() {
-        // run 5 tests
-        for (int i = 0; i < 5; i++) {
-            assertNotNull(OTP.randomBase32(OTP.BYTES));
-        }
+        assertEquals(32, OTP.randomBase32(OTP.BYTES).length());
+        assertEquals(16, OTP.randomBase32(10).length());
     }
 
     @Test
     public void urlTests() throws IllegalArgumentException {
+        String secret = OTP.randomBase32(10);
 
-        String url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 6, Type.HOTP, "Example1", "test1@example.com");
-        assertNotNull(url);
+        String url1 = OTP.getURL(secret, 6, Type.HOTP, "Example1", "test1@example.com");
+        String expectedUrl1 = "otpauth://hotp/Example1:test1@example.com" +
+                "?secret=" + secret + "&issuer=Example1&algorithm=SHA1&digits=6";
+        assertEquals(expectedUrl1, url1);
 
-        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 4, Type.HOTP, "Example2", "test2@example.com");
-        assertNotNull(url);
-
-        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 6, Type.TOTP, "Example3", "test3@example.com");
-        assertNotNull(url);
-
-        url = OTP.getURL(OTP.randomBase32(OTP.BYTES), 4, Type.TOTP, "Example4", "test4@example.com");
-        assertNotNull(url);
+        String url2 = OTP.getURL(secret, 4, Type.TOTP, "BobsBurgers", "bob@burgers.com");
+        String expectedUrl2 = "otpauth://totp/BobsBurgers:bob@burgers.com" +
+                "?secret=" + secret + "&issuer=BobsBurgers&algorithm=SHA1&digits=4&period=30";
+        assertEquals(expectedUrl2, url2);
     }
 
     @Test
