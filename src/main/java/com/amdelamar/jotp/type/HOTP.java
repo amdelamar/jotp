@@ -117,7 +117,7 @@ public class HOTP implements OTPInterface {
         }
 
         // compute hmac hash
-        byte[] hash = Utils.hmac(crypto, secret, text);
+        final byte[] hash = Utils.hmac(crypto, secret, text);
 
         // put selected bytes into result int
         int offset = hash[hash.length - 1] & 0xf;
@@ -132,7 +132,7 @@ public class HOTP implements OTPInterface {
             otp = (otp * 10) + checksum(otp, digits);
         }
         String result = Integer.toString(otp);
-        int digit = addChecksum ? (digits + 1) : digits;
+        final int digit = addChecksum ? (digits + 1) : digits;
         while (result.length() < digit) {
             result = "0" + result;
         }

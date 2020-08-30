@@ -38,8 +38,8 @@ public final class OTP {
      */
     @Deprecated
     public static String random(String characters, int length) {
-        int len = length < 1 ? BYTES : length;
-        SecureRandom random = new SecureRandom();
+        final int len = length < 1 ? BYTES : length;
+        final SecureRandom random = new SecureRandom();
         char[] text = new char[len];
         for (int i = 0; i < len; i++) {
             text[i] = characters.charAt(random.nextInt(characters.length()));
@@ -55,9 +55,9 @@ public final class OTP {
      * @return secure random string
      */
     public static String randomBase32(int length) {
-        int len = length < 1 ? BYTES : length;
+        final int len = length < 1 ? BYTES : length;
         byte[] bytes = new byte[len];
-        SecureRandom random = new SecureRandom();
+        final SecureRandom random = new SecureRandom();
         random.nextBytes(bytes);
 
         return new org.apache.commons.codec.binary.Base32().encodeToString(bytes);
@@ -81,8 +81,8 @@ public final class OTP {
      * @throws IOException when generating Unix time
      */
     public static String timeInHex(long timeInMillis) throws IOException {
-        long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30d);
-        byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
+        final long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30d);
+        final byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();
         return new String(Hex.encodeHex(longBytes));
@@ -114,17 +114,17 @@ public final class OTP {
         validateParameters(secret, base, digits, type);
 
         // Base32 Secret should be UPPERCASED
-        String uppercaseSecret = secret.toUpperCase();
+        final String uppercaseSecret = secret.toUpperCase();
 
         // convert Base32 secret to Hex
-        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
-        String key = new String(Hex.encodeHex(bytes));
+        final byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
+        final String key = new String(Hex.encodeHex(bytes));
 
         if (type == Type.HOTP) {
-            HOTP hotp = new HOTP();
+            final HOTP hotp = new HOTP();
             return hotp.create(key, base, digits);
         } else {
-            TOTP totp = new TOTP();
+            final TOTP totp = new TOTP();
             return totp.create(key, base, digits);
         }
     }
@@ -159,7 +159,7 @@ public final class OTP {
         validateParameters(secret, base, digits, type);
 
         // Base32 Secret should be UPPERCASED
-        String uppercaseSecret = secret.toUpperCase();
+        final String uppercaseSecret = secret.toUpperCase();
 
         if (code == null || code.isEmpty()) {
             throw new IllegalArgumentException("Code cannot be null or empty.");
@@ -170,16 +170,16 @@ public final class OTP {
         }
 
         // convert Base32 secret to Hex
-        byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
-        String key = new String(Hex.encodeHex(bytes));
+        final byte[] bytes = new org.apache.commons.codec.binary.Base32().decode(uppercaseSecret);
+        final String key = new String(Hex.encodeHex(bytes));
 
         // generate code to compare
         String ncode = null;
         if (type == Type.HOTP) {
-            HOTP hotp = new HOTP();
+            final HOTP hotp = new HOTP();
             ncode = hotp.create(key, base, digits);
         } else {
-            TOTP totp = new TOTP();
+            final TOTP totp = new TOTP();
             ncode = totp.create(key, base, digits);
         }
 

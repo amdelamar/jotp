@@ -54,7 +54,7 @@ public class TOTP implements OTPInterface {
     protected static byte[] hexStringToBytes(String hex) {
         // Adding one byte to get the right conversion
         // Values starting with "0" can be converted
-        byte[] bArray = new BigInteger("10" + hex, 16).toByteArray();
+        final byte[] bArray = new BigInteger("10" + hex, 16).toByteArray();
 
         // Copy all the REAL bytes, not the "first"
         byte[] ret = new byte[bArray.length - 1];
@@ -89,18 +89,18 @@ public class TOTP implements OTPInterface {
         }
 
         // Get the HEX in a Byte[]
-        byte[] msg = hexStringToBytes(time);
-        byte[] k = hexStringToBytes(key);
+        final byte[] msg = hexStringToBytes(time);
+        final byte[] k = hexStringToBytes(key);
 
-        byte[] hash = Utils.hmac(crypto, k, msg);
+        final byte[] hash = Utils.hmac(crypto, k, msg);
 
         // put selected bytes into result int
-        int offset = hash[hash.length - 1] & 0xf;
+        final int offset = hash[hash.length - 1] & 0xf;
 
         int binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16)
                 | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
 
-        int otp = binary % ((int) Math.pow(10, digits));
+        final int otp = binary % ((int) Math.pow(10, digits));
 
         String result = Integer.toString(otp);
         while (result.length() < digits) {
