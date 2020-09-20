@@ -21,7 +21,7 @@ Maven:
 <dependency>
     <groupId>com.amdelamar</groupId>
     <artifactId>jotp</artifactId>
-    <version>1.2.2</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.amdelamar:jotp:1.2.2'
+    compile 'com.amdelamar:jotp:1.3.0'
 }
 ```
 
@@ -45,7 +45,7 @@ resolvers += {
 }
 
 libraryDependencies ++= Seq(
-  "com.amdelamar" % "jotp" % "1.2.2"
+  "com.amdelamar" % "jotp" % "1.3.0"
 )
 ```
 
@@ -65,7 +65,7 @@ String secret = OTP.randomBase32(20);
 
 // Generate a Time-based OTP from the secret, using Unix-time
 // rounded down to the nearest 30 seconds.
-String hexTime = OTP.timeInHex(System.currentTimeMillis());
+String hexTime = OTP.timeInHex(System.currentTimeMillis(), 30);
 String code = OTP.create(secret, hexTime, 6, Type.TOTP);
 ```
 
