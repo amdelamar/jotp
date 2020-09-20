@@ -81,7 +81,23 @@ public final class OTP {
      * @throws IOException when generating Unix time
      */
     public static String timeInHex(long timeInMillis) throws IOException {
-        final long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000.0) / 30d);
+        return timeInHex(timeInMillis, 30);
+    }
+
+    /**
+     * A method to get a Unix Time converted to Hexadecimal using a token period.
+     * @param timeInMillis long (like <code>System.currentTimeMillis()</code>)
+     * @param periodInSec int seconds period for the time to be rounded down to
+     * @return String Hex time
+     * @throws IOException
+     */
+    public static String timeInHex(long timeInMillis, int periodInSec) throws IOException {
+        double period = 1d;
+        if (periodInSec > 1) {
+            // ensure period is 1 or greater value
+            period = periodInSec;
+        }
+        final long time = (long) Math.floor(Math.round(((double) timeInMillis) / 1000d) / period);
         final byte[] longBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE)
                 .putLong(time)
                 .array();

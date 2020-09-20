@@ -31,7 +31,7 @@ public class TOTPTest {
     }
 
     @Test
-    public void totpTests() throws IllegalArgumentException, IOException, InterruptedException, InvalidKeyException,
+    public void defaultPeriod() throws IllegalArgumentException, IOException, InterruptedException, InvalidKeyException,
             NoSuchAlgorithmException {
         // Normally we'd use System.currentTimeMillis(), but
         // because we can't control exactly when unit tests run
@@ -55,6 +55,43 @@ public class TOTPTest {
         String code3 = OTP.create(secret, OTP.timeInHex(thirtyOneSecondsLater), 6, Type.TOTP);
         assertNotEquals(code1, code3);
         assertTrue(OTP.verify(secret, OTP.timeInHex(thirtyOneSecondsLater), code3, 6, Type.TOTP));
+    }
+
+    @Test
+    public void customPeriod() throws IllegalArgumentException, IOException, InterruptedException,
+            InvalidKeyException, NoSuchAlgorithmException {
+        // Normally we'd use System.currentTimeMillis(), but
+        // because we can't control exactly when unit tests run
+        // we might fail this test because the 30s window passes
+        // too early. So instead, we'll pick a specific point in
+        // time to make this test repeatable.
+        long time = 1600637701000L;
+        String secret = OTP.randomBase32(OTP.BYTES);
+
+        int period = 60; // 60sec instead of 30sec
+
+        String code1 = OTP.create(secret, OTP.timeInHex(time, period), 6, Type.TOTP);
+
+        // 60 sec window, so wait just a second
+        long oneSecondLater = time + 1000;
+
+        String code2 = OTP.create(secret, OTP.timeInHex(oneSecondLater, period), 6, Type.TOTP);
+        assertEquals(code1, code2);
+        assertTrue(OTP.verify(secret, OTP.timeInHex(oneSecondLater, period), code2, 6, Type.TOTP));
+
+        // If its beyond 30sec since the first OTP,
+        // then we will get the same base value.
+        long thirtyOneSecondsLater = oneSecondLater + 30000;
+        String code3 = OTP.create(secret, OTP.timeInHex(thirtyOneSecondsLater, period), 6, Type.TOTP);
+        assertEquals(code1, code3);
+        assertTrue(OTP.verify(secret, OTP.timeInHex(thirtyOneSecondsLater, period), code3, 6, Type.TOTP));
+
+        // If its beyond 60sec since the first OTP,
+        // then we will get a different base value.
+        long sixtyOneSecondsLater = oneSecondLater + 60000;
+        String code4 = OTP.create(secret, OTP.timeInHex(sixtyOneSecondsLater, period), 6, Type.TOTP);
+        assertNotEquals(code1, code4);
+        assertTrue(OTP.verify(secret, OTP.timeInHex(sixtyOneSecondsLater, period), code4, 6, Type.TOTP));
     }
     
     @Test
