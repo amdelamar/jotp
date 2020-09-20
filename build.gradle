@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'com.amdelamar'
-version = '1.2.2'
+version = '1.3.0'
 description = 'OTP (One Time Password) utility in Java. To enable two-factor authentication (2FA) using HMAC-based) or Time-based algorithms.'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
