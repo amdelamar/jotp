@@ -1,5 +1,7 @@
 # Jotp
 
+[![Bintray](https://img.shields.io/bintray/v/amdelamar/mvn/jotp)](https://bintray.com/amdelamar/mvn/jotp/_latestVersion)
+[![Javadoc](https://www.javadoc.io/badge/com.amdelamar/jotp.svg)](https://www.javadoc.io/doc/com.amdelamar/jotp)
 [![Build](https://img.shields.io/drone/build/amdelamar/jotp.svg)](https://cloud.drone.io/amdelamar/jotp)
 [![Codecov](https://img.shields.io/codecov/c/github/amdelamar/jotp.svg)](https://codecov.io/gh/amdelamar/jotp)
 
