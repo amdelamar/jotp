@@ -1,6 +1,6 @@
 # Jotp
 
-[![Bintray](https://img.shields.io/bintray/v/amdelamar/mvn/jotp)](https://bintray.com/amdelamar/mvn/jotp/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/com.amdelamar/jotp.svg)](https://search.maven.org/search?q=a:jotp)
 [![Javadoc](https://www.javadoc.io/badge/com.amdelamar/jotp.svg)](https://www.javadoc.io/doc/com.amdelamar/jotp)
 [![Build](https://img.shields.io/drone/build/amdelamar/jotp.svg)](https://cloud.drone.io/amdelamar/jotp)
 [![Codecov](https://img.shields.io/codecov/c/github/amdelamar/jotp.svg)](https://codecov.io/gh/amdelamar/jotp)
@@ -13,13 +13,6 @@ OTP (One Time Password) utility in Java. To enable two-factor authentication (2F
 Maven:
 
 ```xml
-<repositories>
-    <repository>
-        <id>jcenter</id>
-        <url>https://jcenter.bintray.com/</url>
-    </repository>
-</repositories>
-
 <dependency>
     <groupId>com.amdelamar</groupId>
     <artifactId>jotp</artifactId>
@@ -30,10 +23,6 @@ Maven:
 Gradle:
 
 ```gradle
-repositories {
-    jcenter()
-}
-
 dependencies {
     compile 'com.amdelamar:jotp:1.3.0'
 }
@@ -42,16 +31,12 @@ dependencies {
 SBT:
 
 ```scala
-resolvers += {
-  Resolver.jcenterRepo
-}
-
 libraryDependencies ++= Seq(
   "com.amdelamar" % "jotp" % "1.3.0"
 )
 ```
 
-Or Download the [latest release](https://github.com/amdelamar/jotp/releases). Published on [JCenter](https://bintray.com/amdelamar/mvn/jotp).
+Or Download the [latest release](https://github.com/amdelamar/jotp/releases).
 
 
 ## Usage
