@@ -58,10 +58,19 @@ String code = OTP.create(secret, hexTime, 6, Type.TOTP);
 
 Show the user the QR Code <sup>1</sup>
 
-Easiest way to do this is through Goolge APIs, but I plan to add a 'generateImage()' function soon.
+First generate the otpUrl.
 
-[![QR Image Example](https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://developers.google.com/chart/infographics/docs/qr_codes)
-https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30
+```java
+// Generate otpauth URL
+String otpUrl = OTP.getURL(secret, 6, Type.TOTP, "Example", "test@example.com");
+// Returns: "otpauth://totp/Example:test@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30";
+```
+
+Then use a service like quickchart.io and paste the otpUrl for the "text" parameter: `https://quickchart.io/qr?size=200&text=$otpUrl`
+
+[![QR Image Example](https://quickchart.io/qr?size=200&text=otpauth://totp/Example:test@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30)](https://quickchart.io/documentation/qr-codes/)
+
+Alternatively, instead of a web service you can use a Java library like [nayuki/QR-Code-generator](https://github.com/nayuki/QR-Code-generator).
 
 After user scans the image with their mobile app we can compare codes.
 
@@ -70,7 +79,7 @@ After user scans the image with their mobile app we can compare codes.
 String userEnteredCode = "123456";
 
 // Verify OTP
-if(OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
+if (OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
     // Code valid. Login successful.
 }
 ```

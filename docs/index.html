@@ -106,28 +106,31 @@ String hexTime = OTP.timeInHex(System.currentTimeMillis());
 String code = OTP.create(secret, hexTime, 6, Type.TOTP);</code></pre>
             <p>
             Show User QR Code<sup>1</sup><br>
-            Easiest way to do this is through Goolge APIs, but I plan to add a <code>generateImage()</code> function soon.</p>
+            First generate the otpUrl.</p>
 
+            <pre><code class="java">// Generate otpauth URL
+String otpUrl = OTP.getURL(secret, 6, Type.TOTP, "Example", "test@example.com");
+// Returns: "otpauth://totp/Example:test@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30";</code></pre>
+
+            <p>
+            Then use a service like quickchart.io and paste the otpUrl for the "text" parameter: <code>https://quickchart.io/qr?size=200&text=$otpUrl</code>
+            </p>
         <div class="row">
         <div class="four columns">
-            <a href="https://developers.google.com/chart/infographics/docs/qr_codes">
-            <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30" alt="QR Image Example" style="width:unset;border-radius:unset;" /></a>
+            <a href="https://quickchart.io/documentation/qr-codes/">
+            <img src="https://quickchart.io/qr?size=200&text=otpauth://totp/Example:test@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30" alt="QR Image Example" style="width:unset;border-radius:unset;" /></a>
         </div>
         <div class="eight columns">
-            <p><br><br>
-                <i>https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Example:hello@example.com?secret=IM4ZL3G5Q66KW4U7PMOQVXQQH3NGOCHQ&issuer=Example&algorithm=SHA1&digits=6&period=30</i>
-                <br><br>
-                (You can use <code>OTP.getURL()</code> to get the <code>otpauth://</code> URL too.)
-            </p>
         </div>
         </div>
+            <p>Alternatively, instead of a web service you can use a Java library like <a href="https://github.com/nayuki/QR-Code-generator">nayuki/QR-Code-generator</a>.</p>
 
             <p>After user scans the image with their mobile app...</p>
             <pre><code class="java">// Get User's input code for a login...
 String userEnteredCode = "123456";
 
 // Verify OTP
-if(OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
+if (OTP.verify(secret, userEnteredCode, 6, Type.TOTP)) {
     // Code valid. Login successful.
 }</code></pre>
 
